@@ -1,4 +1,4 @@
-# IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus
+# IEPile: A Large-Scale Schema-Based Information Extraction Instruction Corpus
 
 <p align="left">
     <b> English | <a href="">Chinese</a> </b>
