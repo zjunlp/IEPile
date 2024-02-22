@@ -1,7 +1,7 @@
 # IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus
 
 <p align="left">
-    <b> English | <a href="">Chinese</a> </b>
+    <b> English | <a href="https://github.com/zjunlp/IEPile/blob/main/README_CN.md">Chinese</a> </b>
 </p>
 
 
