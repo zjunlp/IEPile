@@ -449,4 +449,4 @@ From the data perspective, our study primarily focuses on schema-based IE, which
 Additionally, we do not explore the field of Open Information Extraction (Open IE); however, if we remove schema constraints, our dataset would be suitable for Open IE scenarios.
 Besides, IEPILE is confined to data in English and Chinese, and in the future, we hope to include data in more languages.
 
-From the model perspective, due to computational resource limitations, our research only assessed two models: Baichuan and LLaMA, along with some baseline models. Our dataset can be applied to any other large language models (LLMs), such as Qwen, ChatGLM.
+From the model perspective, due to computational resource limitations, our research only assessed two models: Baichuan and LLaMA, along with some baseline models. Our dataset can be applied to any other large language models (LLMs), such as Qwen, ChatGLM, Gemma.
