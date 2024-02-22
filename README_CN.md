@@ -44,7 +44,7 @@
 
 **大型语言模型(LLMs)** 在各种领域中表现出了显著的潜力，然而，在 **信息提取(IE)** 方面，LLM存在显著的性能差距。当前IE数据集往往规模较小，分布散乱，且schema不规范。我们通过收集和清洗现有的IE数据，并采取本研究所提出的 `基于schema的指令构造方法`，成功创建了一个名为 **IEPILE** 的综合性包含约 `0.32B tokens` 的IE指令微调数据集。实验结果表明，IEPILE显著提高了LLMs在基于schema的IE上的**零样本泛化**能力。我们开源了自己的数据集和代码，为学术界提供了宝贵的支持。
 
-<center><img src="./assets/statistic.jpg" width="70%"></center>
+![statistic](./assets/statistic.jpg)
 
 我们总共收集了15个英文NER数据集，3个中文NER数据集，8个英文RE数据集，2个中文RE数据集，以及3个英文EE数据集和2个中文EE数据集。图1展示了这些数据集的统计信息, 覆盖了**通用**、**生物**、**金融**等众多领域。我们不仅统一了各类任务上的数据格式，而且对每个数据集进行了仔细的审计，为每个数据集创建了详细的**数据记录**，包括数据量、领域、模式等重要信息。
 
@@ -52,19 +52,20 @@
 基于**IEPILE**，我们使用`Lora`技术对`Baichuan2-13B-Chat`、`LLaMA2-13B-Chat`模型进行了微调。实验结果显示, 微调后的模型`Baichuan2-IEPILE`, `LLaMA2-IEPILE` 不仅在全监督训练集上取得了可比的结果, 还在**零样本信息抽取**上取得了显著提升。
 
 
-<center><img src="./assets/zero_en.jpg" width="80%"></center>
+![zero_en](./assets/zero_en.jpg)
 
-<center><img src="./assets/zero_zh.jpg" width="80%"></center>
+![zero_zh](./assets/zero_zh.jpg)
 
 
 <details>
   <summary><b>全监督数据集结果</b></summary>
 
-<center><img src="./assets/supervision_ner.jpg" width="80%"></center>
+![supervision_ner](./assets/supervision_ner.jpg)
 
-<center><img src="./assets/supervision_re.jpg" width="80%"></center>
+![supervision_re](./assets/supervision_re.jpg)
 
-<center><img src="./assets/supervision_ee.jpg" width="80%"></center>
+![supervision_ee](./assets/supervision_ee.jpg)
+
 </details>
 
 
@@ -79,7 +80,7 @@
    
 因此，我们提出如下解决方案：1、`轮询式的指令生成`；2、`构造难负样本字典`。
 
-<center><img src="./assets/iepile.jpg" width="80%"></center>
+![iepile](./assets/iepile.jpg)
 
 <details>
   <summary><b>难负样本</b></summary>

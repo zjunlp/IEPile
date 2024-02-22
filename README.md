@@ -45,9 +45,8 @@ Model download links for **`LLaMA2-IEPILE`** | **`Baichuan2-IEPILE`** | **`KnowL
 **Large Language Models (LLMs)** demonstrate remarkable potential across various domains; however, they exhibit a significant performance gap in **Information Extraction (IE)**. Note that high-quality instruction data is the vital key for enhancing the specific capabilities of LLMs, while current IE datasets tend to be small in scale, fragmented, and lack standardized schema. To this end, we introduce **IEPILE**, a comprehensive bilingual (English and Chinese) IE instruction corpus, which contains approximately **0.32B** tokens. We construct IEPILE by collecting and cleaning 33 existing IE datasets, and introduce schema-based instruction generation to unearth a large-scale corpus. Experimental results on LLaMA and Baichuan demonstrate that using IEPILE can enhance the performance of LLMs for IE, especially the zero-shot generalization. We open-source the resource and pre-trained models, hoping to provide valuable support to the NLP community.
 
 
-<center><img src="./assets/statistic.jpg" width="70%"></center>
 
-
+![statistic](./assets/statistic.jpg)
 
 
 We collected a total of 15 English NER datasets, 3 Chinese NER datasets, 8 English RE datasets, 2 Chinese RE datasets, as well as 3 English EE datasets and 2 Chinese EE datasets. Figure 1 shows the statistical information of these datasets, covering a wide range of fields including **general**, **medicine**, **financial**, and more. We not only standardized the data format across various tasks but also conducted a meticulous audit for each dataset, creating detailed **data records** including quantity, domain, schema, and other important information.
@@ -57,20 +56,19 @@ We collected a total of 15 English NER datasets, 3 Chinese NER datasets, 8 Engli
 Based on **IEPILE**, we fine-tuned the `Baichuan2-13B-Chat` and `LLaMA2-13B-Chat` models using `Lora` technology. The experimental results showed that the fine-tuned models `Baichuan2-IEPILE` and `LLaMA2-IEPILE` not only achieved comparable results on fully supervised training sets but also saw significant improvements in **zero-shot information extraction**.
 
 
+![zero_en](./assets/zero_en.jpg)
 
-<center><img src="./assets/zero_en.jpg" width="80%"></center>
-
-<center><img src="./assets/zero_zh.jpg" width="80%"></center>
+![zero_zh](./assets/zero_zh.jpg)
 
 
 <details>
   <summary><b>Supervision Results</b></summary>
 
-<center><img src="./assets/supervision_ner.jpg" width="80%"></center>
+![supervision_ner](./assets/supervision_ner.jpg)
 
-<center><img src="./assets/supervision_re.jpg" width="80%"></center>
+![supervision_re](./assets/supervision_re.jpg)
 
-<center><img src="./assets/supervision_ee.jpg" width="80%"></center>
+![supervision_ee](./assets/supervision_ee.jpg)
 
 </details>
 
@@ -87,8 +85,7 @@ We concentrate on schema-based IE, thus the construction of schema within the in
 Therefore, we introduce the following solutions: 1) Hard Negative Schema; and 2) Batched Instruction Generation.
 
 
-
-<center><img src="./assets/iepile.jpg" width="80%"></center>
+![iepile](./assets/iepile.jpg)
 
 
 <details>
