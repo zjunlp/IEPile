@@ -1,12 +1,3 @@
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
-});
-</script>
-<script type="text/javascript" async
-    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
 
 <p align="left">
     <b> English | <a href="https://github.com/zjunlp/IEPile/blob/main/README_CN.md">Chinese</a> </b>
