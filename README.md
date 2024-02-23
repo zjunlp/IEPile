@@ -25,18 +25,18 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
     - [3.1Environment](#31environment)
     - [3.2Download Data and Models](#32download-data-and-models)
     - [3.4LoRA Fine-tuning](#34lora-fine-tuning)
-    - [4.Continued Training with In-Domain Data](#4continued-training-with-in-domain-data)
-      - [4.1Training Data Conversion](#41training-data-conversion)
-      - [4.2Continued Training](#42continued-training)
+  - [4.Continued Training with In-Domain Data](#4continued-training-with-in-domain-data)
+    - [4.1Training Data Conversion](#41training-data-conversion)
+    - [4.2Continued Training](#42continued-training)
   - [5.Prediction](#5prediction)
     - [5.1Test Data Conversion](#51test-data-conversion)
     - [5.2Basic Model + LoRA Prediction](#52basic-model--lora-prediction)
     - [5.3IE-Specific Model Prediction](#53ie-specific-model-prediction)
   - [6.Evaluation](#6evaluation)
-- [7.Statement and License](#7statement-and-license)
-- [8.Limitations](#8limitations)
-- [9.Cite](#9cite)
-- [10.Acknowledgements](#10acknowledgements)
+  - [7.Statement and License](#7statement-and-license)
+  - [8.Limitations](#8limitations)
+  - [9.Cite](#9cite)
+  - [10.Acknowledgements](#10acknowledgements)
 
 
 ## 🎯1.Introduction
@@ -277,12 +277,12 @@ The specific script for fine-tuning the `Baichuan2-13B-Chat` model can be found 
 
 
 
-### 4.Continued Training with In-Domain Data
+## 4.Continued Training with In-Domain Data
 
 Although the `Baichuan2-IEPile` and `LLaMA2-IEPile` models have undergone extensive instruction fine-tuning on multiple general datasets and thus possess a degree of **general information extraction capability**, they may still exhibit certain limitations when processing data in **specific domains** (such as `law`, `education`, `science`, `telecommunications`). To address this challenge, it is recommended to conduct **secondary training** of these models on datasets specific to these domains. This will help the models better adapt to the semantic and structural characteristics of the specific domains, significantly enhancing their **information extraction capability within those domains**.
 
 
-#### 4.1Training Data Conversion
+### 4.1Training Data Conversion
 
 Firstly, it's necessary to **format the data** to include `instruction` and `output` fields. For this purpose, we provide a script [convert_func.py](./ie2instruction/convert_func.py), which can batch convert data into a format that can be directly used by the model.
 
@@ -314,7 +314,7 @@ python ie2instruction/convert_func.py \
 The converted training data will contain four fields: `task`, `source`, `instruction`, `output`.
 
 
-#### 4.2Continued Training
+### 4.2Continued Training
 
 
 ```bash
@@ -458,7 +458,7 @@ python ie2instruction/eval_func.py \
 
 
 
-# 7.Statement and License
+## 7.Statement and License
 We believe that annotated data contains the wisdom of humanity, and its existence is to promote the benefit of all humankind and help enhance our quality of life. We strongly urge all users not to use our corpus for any actions that may harm national or public security or violate legal regulations.
 We have done our best to ensure the quality and legality of the data provided. However, we also recognize that despite our efforts, there may still be some unforeseen issues, such as concerns about data protection and risks and problems caused by data misuse. We will not be responsible for these potential problems.
 For original data that is subject to usage permissions stricter than the [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en) agreement, IEPile will adhere to those stricter terms. In all other cases, our operations will be based on the [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en) license agreement.
@@ -466,7 +466,7 @@ For original data that is subject to usage permissions stricter than the [CC BY-
 
 
 
-# 8.Limitations
+## 8.Limitations
 
 From the data perspective, our study primarily focuses on schema-based IE, which limits our ability to generalize to human instructions that do not follow our specific format requirements. 
 Additionally, we do not explore the field of Open Information Extraction (Open IE); however, if we remove schema constraints, our dataset would be suitable for Open IE scenarios.
@@ -476,13 +476,13 @@ From the model perspective, due to computational resource limitations, our resea
 
 
 
-# 9.Cite
+## 9.Cite
 If you use the IEPile or the code, please cite the paper:
 
 
 
 
-# 10.Acknowledgements
+## 10.Acknowledgements
 We are very grateful for the inspiration provided by the [MathPile](mathpile) and [KnowledgePile](https://huggingface.co/datasets/Query-of-CC/Knowledge_Pile) projects. Special thanks are due to the builders and maintainers of the following datasets: [AnatEM](https://doi.org/10.1093/BIOINFORMATICS/BTT580)、[BC2GM](https://link.springer.com/chapter/10.1007/978-3-030-68763-2_48)、[BC4CHEMD](https://link.springer.com/chapter/10.1007/978-3-030-68763-2_48)、[NCBI-Disease](https://linkinghub.elsevier.com/retrieve/pii/S1532046413001974)、[BC5CDR](https://openreview.net/pdf?id=9EAQVEINuum)、[HarveyNER](https://aclanthology.org/2022.naacl-main.243/)、[CoNLL2003](https://aclanthology.org/W03-0419/)、[GENIA](https://pubmed.ncbi.nlm.nih.gov/12855455/)、[ACE2005](https://catalog.ldc.upenn.edu/LDC2006T06)、[MIT Restaurant](https://ieeexplore.ieee.org/document/6639301)、[MIT Movie](https://ieeexplore.ieee.org/document/6639301)、[FabNER](https://link.springer.com/article/10.1007/s10845-021-01807-x)、[MultiNERD](https://aclanthology.org/2022.findings-naacl.60/)、[Ontonotes](https://aclanthology.org/N09-4006/)、[FindVehicle](https://arxiv.org/abs/2304.10893)、[CrossNER](https://ojs.aaai.org/index.php/AAAI/article/view/17587)、[MSRA NER](https://aclanthology.org/W06-0115/)、[Resume NER](https://aclanthology.org/P18-1144/)、[CLUE NER](https://arxiv.org/abs/2001.04351)、[Weibo NER](https://aclanthology.org/D15-1064/)、[Boson](https://github.com/InsaneLife/ChineseNLPCorpus/tree/master/NER/boson)、[ADE Corpus](https://jbiomedsem.biomedcentral.com/articles/10.1186/2041-1480-3-15)、[GIDS](https://arxiv.org/abs/1804.06987)、[CoNLL2004](https://aclanthology.org/W04-2412/)、[SciERC](https://aclanthology.org/D18-1360/)、[Semeval-RE](https://aclanthology.org/S10-1006/)、[NYT11-HRL](https://ojs.aaai.org/index.php/AAAI/article/view/4688)、[KBP37](https://arxiv.org/abs/1508.01006)、[NYT](https://link.springer.com/chapter/10.1007/978-3-642-15939-8_10)、[Wiki-ZSL](https://aclanthology.org/2021.naacl-main.272/)、[FewRel](https://aclanthology.org/D18-1514/)、[CMeIE](https://link.springer.com/chapter/10.1007/978-3-030-60450-9_22)、[DuIE](https://link.springer.com/chapter/10.1007/978-3-030-32236-6_72)、[COAE2016](https://github.com/Sewens/COAE2016)、[IPRE](https://arxiv.org/abs/1907.12801)、[SKE2020](https://aistudio.baidu.com/datasetdetail/177191)、[CASIE](https://ojs.aaai.org/index.php/AAAI/article/view/6401)、[PHEE](https://aclanthology.org/2022.emnlp-main.376/)、[CrudeOilNews](https://aclanthology.org/2022.lrec-1.49/)、[RAMS](https://aclanthology.org/2020.acl-main.718/)、[WikiEvents](https://aclanthology.org/2021.naacl-main.69/)、[DuEE](https://link.springer.com/chapter/10.1007/978-3-030-60457-8_44)、[DuEE-Fin](https://link.springer.com/chapter/10.1007/978-3-031-17120-8_14)、[FewFC](https://ojs.aaai.org/index.php/AAAI/article/view/17720)、[CCF law](https://aistudio.baidu.com/projectdetail/4201483), and more. These datasets have significantly contributed to the advancement of this research. We are also grateful for the valuable contributions in the field of information extraction made by [InstructUIE](http://arxiv.org/abs/2304.08085) and [YAYI-UIE](http://arxiv.org/abs/2312.15548), both in terms of data and model innovation. Our research results have benefitted from their creativity and hard work as well. Additionally, our heartfelt thanks go to [hiyouga/LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory); our fine-tuning code implementation owes much to their work. The assistance provided by these academic resources has been instrumental in the completion of our research, and for this, we are deeply appreciative.
 
 
