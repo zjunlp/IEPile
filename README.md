@@ -1,10 +1,20 @@
+<p align="left">
+    <b> English | <a href="">Chinese</a> </b>
+</p>
+
 # IEPile: A Large-Scale Information Extraction Corpus
 
 This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](https://arxiv.org/abs/2402.14710)
 
-<p align="left">
-    <b> English | <a href="">Chinese</a> </b>
-</p>
+[**Homepage**]() |
+[**Datasets**](https://huggingface.co/datasets/zjunlp/iepie) | 
+[**Paper**](https://huggingface.co/papers/2402.14710) | 
+[**Usage**](https://github.com/zjunlp/IEPile?tab=readme-ov-file#3using-iepile-to-train-models) |
+[**Limitations**](https://github.com/zjunlp/IEPile?tab=readme-ov-file#7-limitations) |
+[**Statement & License**](https://github.com/zjunlp/IEPile?tab=readme-ov-file#7-limitations) |
+[**Citation**]() 
+
+> Please be aware that our corpus could be updated (we will notify upon release). It is advisable to use the latest version.
 
 
 - [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](#iepile-unearthing-large-scale-schema-based-information-extraction-corpus)
@@ -30,7 +40,8 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
   - [5.Evaluation](#5evaluation)
 - [6. Statement and License](#6-statement-and-license)
 - [7. Limitations](#7-limitations)
-- [8. Acknowledgements](#8-acknowledgements)
+- [8. Cite](#7-cite)
+- [9. Acknowledgements](#8-acknowledgements)
 
 
 ## 🎯1.Introduction
@@ -454,7 +465,11 @@ Besides, IEPILE is confined to data in English and Chinese, and in the future, w
 
 From the model perspective, due to computational resource limitations, our research only assessed two models: Baichuan and LLaMA, along with some baseline models. Our dataset can be applied to any other large language models (LLMs), such as Qwen, ChatGLM, Gemma.
 
-# 8. Acknowledgements
+# 8. Cite
+If you use the IEPile or the code, please cite the paper:
 
+
+
+# 9. Acknowledgements
 
 We are very grateful for the inspiration provided by the [MathPile](mathpile) and [KnowledgePile](https://huggingface.co/datasets/Query-of-CC/Knowledge_Pile) projects.
