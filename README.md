@@ -1,5 +1,7 @@
 # IEPile: A Large-Scale Information Extraction Corpus
 
+This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](https://arxiv.org/abs/2402.14710)
+
 <p align="left">
     <b> English | <a href="">Chinese</a> </b>
 </p>
