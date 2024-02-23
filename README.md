@@ -11,7 +11,7 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
 [**Usage**](./README.md#🚴3using-IEPile-to-train-models) |
 [**Limitations**](./README.md#8limitations) |
 [**Statement & License**](./README.md#7statement-and-license) |
-[**Citation**](./README.md#8-cite) 
+[**Citation**](./README.md#9cite) 
 
 > Please note that our IEPile may undergo **updates** (we will inform you upon their release). It is recommended to utilize the most current version.
 
