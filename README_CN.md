@@ -2,7 +2,7 @@
     <b> <a href="https://github.com/zjunlp/IEPile/tree/main">English</a> | 简体中文 </b>
 </p>
 
-# IEPile：大规模信息提取语料库
+# IEPile：大规模信息抽取语料库
 
 这是论文 [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](https://arxiv.org/abs/2402.14710) 的官方仓库
 
@@ -17,7 +17,7 @@
 > 请注意，我们的IEPile可能会进行**更新**（一旦发布更新，我们将通知您）。建议使用最新版本。
 
 
-- [IEPile：大规模信息提取语料库](#iepile大规模信息提取语料库)
+- [IEPile：大规模信息抽取语料库](#iepile大规模信息抽取语料库)
   - [🎯1.介绍](#1介绍)
   - [📊2.数据](#2数据)
     - [2.1IEPile的构造](#21iepile的构造)
