@@ -8,7 +8,7 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
 
 [**Datasets**](https://huggingface.co/datasets/zjunlp/iepie) | 
 [**Paper**](https://huggingface.co/papers/2402.14710) | 
-[**Usage**](./README.md#🚴3using-IEPile-to-train-models) |
+[**Usage**](./README.md#🚴3using-iepile-to-train-models) |
 [**Limitations**](./README.md#8limitations) |
 [**Statement & License**](./README.md#7statement-and-license) |
 [**Citation**](./README.md#9cite) 
