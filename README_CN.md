@@ -10,9 +10,9 @@
 [**数据集**](https://huggingface.co/datasets/zjunlp/iepie) |
 [**论文**](https://huggingface.co/papers/2402.14710) |
 [**使用方法**](./README_CN.md#🚴3使用IEPile训练模型) |
-[**局限性**](./README_CN.md#7局限) |
-[**声明和许可**](./README_CN.md#6声明和许可) |
-[**引用**](./README_CN.md#)
+[**局限性**](./README_CN.md#8局限) |
+[**声明和许可**](./README_CN.md#7声明和许可) |
+[**引用**](./README_CN.md#9引用)
 
 > 请注意，我们的IEPile可能会进行**更新**（一旦发布更新，我们将通知您）。建议使用最新版本。
 
