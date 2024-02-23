@@ -28,7 +28,7 @@
   - [5.Evaluation](#5evaluation)
 - [6. Statement and License](#6-statement-and-license)
 - [7. Limitations](#7-limitations)
-- [8. Acknowledgements(#8-acknowledgements)]
+- [8. Acknowledgements](#8-acknowledgements)
 
 
 ## 🎯1.Introduction
