@@ -25,7 +25,6 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
     - [3.1Environment](#31environment)
     - [3.2Download Data and Models](#32download-data-and-models)
     - [3.4LoRA Fine-tuning](#34lora-fine-tuning)
-      - [3.4.1Fine-tuning LLaMA2 with LoRA](#341fine-tuning-llama2-with-lora)
     - [4.Continued Training with In-Domain Data](#4continued-training-with-in-domain-data)
       - [4.1Training Data Conversion](#41training-data-conversion)
       - [4.2Continued Training](#42continued-training)
@@ -187,6 +186,13 @@ pip install -r requirements.txt     # Install dependencies
 
 **`IEPile`** dataset download links: [Google Drive](https://drive.google.com/file/d/1jPdvXOTTxlAmHkn5XkeaaCFXQkYJk5Ng/view?usp=sharing) | [Hugging Face](https://huggingface.co/datasets/zjunlp/IEPile)
 
+
+```python
+IEPile
+├── train.json    # Training set
+└── dev.json      # Validation set
+```
+
 Here are some of the models supported by the code in this repository:
 [[llama](https://huggingface.co/meta-llama), [alpaca](https://github.com/tloen/alpaca-lora), [vicuna](https://huggingface.co/lmsys), [zhixi](https://github.com/zjunlp/KnowLM), [falcon](https://huggingface.co/tiiuae), [baichuan](https://huggingface.co/baichuan-inc), [chatglm](https://huggingface.co/THUDM), [qwen](https://huggingface.co/Qwen), [moss](https://huggingface.co/fnlp), [openba](https://huggingface.co/OpenBA)]
 
@@ -210,10 +216,7 @@ Data should be placed in the `./data` directory.
 
 ### 3.4LoRA Fine-tuning
 
-
-#### 3.4.1Fine-tuning LLaMA2 with LoRA
-
-> Important Note: All the commands below should be executed within the IEPile directory. For example, if you want to run the fine-tuning script, you should use the following command: `bash ft_scripts/fine_llama.bash`. Please ensure your current working directory is correct.
+> Important Note: All the commands below should be executed within the `IEPile` directory. For example, if you want to run the fine-tuning script, you should use the following command: `bash ft_scripts/fine_llama.bash`. Please ensure your current working directory is correct.
 
 
 
@@ -260,6 +263,8 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
 * `per_device_train_batch_size`, `per_device_eval_batch_size`: The `batch_size` on each GPU device, adjust according to the size of the memory.
 * `max_source_length`, `max_target_length`, `cutoff_len`: The maximum input and output lengths, and the cutoff length, which can simply be considered as the maximum input length + maximum output length. Set appropriate values according to specific needs and memory size.
 * `deepspeed`: Remove if there is not enough device resources.
+
+> Quantization can be performed by setting `bits` to 8 or 4.
 
 To learn more about parameter configuration, please refer to the [src/utils/args](./src/args). 
 
@@ -311,7 +316,46 @@ The converted training data will contain four fields: `task`, `source`, `instruc
 
 #### 4.2Continued Training
 
+
+```bash
+output_dir='lora/llama2-13b-chat-v1-continue'
+mkdir -p ${output_dir}
+CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port=1287 src/test_finetune.py \
+    --do_train --do_eval \
+    --overwrite_output_dir \
+    --model_name_or_path 'models/llama2-13B-Chat' \
+    --checkpoint_dir 'zjunlp/llama2-13b-iepile-lora' \
+    --stage 'sft' \
+    --model_name 'llama' \
+    --template 'llama2' \
+    --train_file 'data/train.json' \
+    --valid_file 'data/dev.json' \
+    --output_dir=${output_dir} \
+    --per_device_train_batch_size 24 \
+    --per_device_eval_batch_size 24 \
+    --gradient_accumulation_steps 4 \
+    --preprocessing_num_workers 16 \
+    --num_train_epochs 10 \
+    --learning_rate 5e-5 \
+    --max_grad_norm 0.5 \
+    --optim "adamw_torch" \
+    --max_source_length 400 \
+    --cutoff_len 700 \
+    --max_target_length 300 \
+    --report_to tensorboard \
+    --evaluation_strategy "epoch" \
+    --save_strategy "epoch" \
+    --save_total_limit 10 \
+    --lora_r 64 \
+    --lora_alpha 64 \
+    --lora_dropout 0.05 \
+    --bf16 
+```
+
 * To continue training based on the fine-tuned LoRA weights, simply point the `--checkpoint_dir` parameter to the path of the LoRA weights, for example by setting it to `'zjunlp/llama2-13b-iepile-lora'`.
+
+> Quantization can be performed by setting `bits` to 8 or 4.
+
 
 > Please note that when using **`LLaMA2-IEPile`** or **`Baichuan2-IEPile`**, keep both lora_r and lora_alpha at 64. We do not provide recommended settings for these parameters.
 

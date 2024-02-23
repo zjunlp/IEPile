@@ -190,7 +190,7 @@ pip install -r requirements.txt     # 安装依赖
 ```python
 IEPile
 ├── train.json    # 训练集
-└── dev.json      # 测试集
+└── dev.json      # 验证集
 ```
 
 以下是本仓库代码支持的一些基础模型：[[llama](https://huggingface.co/meta-llama), [alpaca](https://github.com/tloen/alpaca-lora), [vicuna](https://huggingface.co/lmsys), [zhixi](https://github.com/zjunlp/KnowLM), [falcon](https://huggingface.co/tiiuae), [baichuan](https://huggingface.co/baichuan-inc), [chatglm](https://huggingface.co/THUDM), [qwen](https://huggingface.co/Qwen), [moss](https://huggingface.co/fnlp), [openba](https://huggingface.co/OpenBA)]
@@ -213,7 +213,7 @@ mkdir lora         # lora微调结果放这
 
 ### 3.3LoRA微调
 
-> 重要提示：以下的所有命令均应在IEPile目录下执行。例如，如果您想运行微调脚本，您应该使用如下命令：bash ft_scripts/fine_llama.bash。请确保您的当前工作目录正确。
+> 重要提示：以下的所有命令均应在`IEPile`目录下执行。例如，如果您想运行微调脚本，您应该使用如下命令：bash ft_scripts/fine_llama.bash。请确保您的当前工作目录正确。
 
 
 ```bash
@@ -260,6 +260,8 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
 * `per_device_train_batch_size`, `per_device_eval_batch_size`: 每台GPU设备上的`batch_size`, 根据显存大小调整。
 * `max_source_length`, `max_target_length`, `cutoff_len`: 最大输入、输出长度、截断长度, 截断长度可以简单地视作最大输入长度 + 最大输出长度, 需根据具体需求和显存大小设置合适值。
 * `deepspeed`: 设备资源不够可去掉。
+
+> 可通过设置 `bits` = 8 或 4 进行量化。
 
 * 要了解更多关于**参数配置**的信息，请参考 [src/utils/args](./src/args) 目录。
 
@@ -344,6 +346,8 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
 ```
 
 * 若要基于微调后的LoRA权重继续训练，仅需将 `checkpoint_dir` 参数指向LoRA权重路径，例如设置为`'zjunlp/llama2-13b-iepile-lora'`。
+
+> 可通过设置 `bits` = 8 或 4 进行量化。
 
 > 请注意，在使用 **`LLaMA2-IEPile`** 或 **`Baichuan2-IEPile`** 时，保持lora_r和lora_alpha均为64，对于这些参数，我们不提供推荐设置。
 
