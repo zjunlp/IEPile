@@ -6,7 +6,6 @@
 
 This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](https://arxiv.org/abs/2402.14710)
 
-[**Homepage**]() |
 [**Datasets**](https://huggingface.co/datasets/zjunlp/iepie) | 
 [**Paper**](https://huggingface.co/papers/2402.14710) | 
 [**Usage**](https://github.com/zjunlp/IEPile?tab=readme-ov-file#3using-iepile-to-train-models) |
