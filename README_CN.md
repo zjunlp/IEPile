@@ -7,8 +7,10 @@
 
 - [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](#iepile-unearthing-large-scale-schema-based-information-extraction-corpus)
   - [🎯1.介绍](#1介绍)
+  - [精简](#精简)
   - [📊2.数据](#2数据)
     - [2.1IEPILE的构造](#21iepile的构造)
+  - [增加文件树格式](#增加文件树格式)
     - [2.2IEPILE的数据统计分析](#22iepile的数据统计分析)
   - [🚴3使用IEPILE训练模型](#3使用iepile训练模型)
     - [3.1环境](#31环境)
@@ -18,6 +20,7 @@
       - [3.4.1LoRA微调LLaMA2](#341lora微调llama2)
       - [3.4.3LoRA微调Baichuan2](#343lora微调baichuan2)
       - [3.4.3LoRA微调其他模型](#343lora微调其他模型)
+  - [放4](#放4)
     - [3.5模型继续训练](#35模型继续训练)
       - [3.5.1训练数据转换](#351训练数据转换)
       - [3.5.2继续训练](#352继续训练)
@@ -28,6 +31,7 @@
   - [5.评估](#5评估)
 - [6.声明和许可](#6声明和许可)
 - [7.局限](#7局限)
+  - [致谢,数据集等](#致谢数据集等)
 
 
 ## 🎯1.介绍
@@ -41,6 +45,8 @@
 
 **`LLaMA2-IEPILE`** | **`Baichuan2-IEPILE`** | **`KnowLM-IE-v2`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/KnowLM-IE-v2]()
 
+
+## 精简
 
 **大型语言模型(LLMs)** 在各种领域中表现出了显著的潜力，然而，在 **信息提取(IE)** 方面，LLM存在显著的性能差距。当前IE数据集往往规模较小，分布散乱，且schema不规范。我们通过收集和清洗现有的IE数据，并采取本研究所提出的 `基于schema的指令构造方法`，成功创建了一个名为 **IEPILE** 的综合性包含约 `0.32B tokens` 的IE指令微调数据集。实验结果表明，IEPILE显著提高了LLMs在基于schema的IE上的**零样本泛化**能力。我们开源了自己的数据集和代码，为学术界提供了宝贵的支持。
 
@@ -97,6 +103,8 @@
 在完成了上述步骤后，我们得到了最终的schema集合 $L'=Pos\_L + Neg\_L$。在基于schema的信息抽取（IE）指令构造中，schema的作用至关重要，它直接决定了模型需要抽取的信息类型，并且反映了用户的具体需求。传统做法通常将完整的schema一次性整合入指令中，然而，在本研究中，我们采纳了一种**轮询式方法**，限制每次询问的schema数量为 $split\_num$ 个，取值范围在4至6之间。因此 $L'$ 将被分为 $|L'|/split\_num$ 个批次进行询问，每批次询问 $split\_num$ 个schema。即使在评估阶段询问的schema数目与训练时不同，通过轮询机制，我们可以将询问数量平均分散至 $split\_num$ 个，从而缓解泛化性能下降的问题。
 
 </details>
+
+## 增加文件树格式
 
 
 **指令格式**
@@ -291,6 +299,8 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
 微调其他模型只需调整`--model_name`, `--template`两个参数, 例如: 对于`alpaca`模型设置`--model_name alpaca`, `--template alpaca`, 对于`chatglm3`模型设置`--model_name chatglm`, `--template chatglm3`。
 
 
+## 放4
+
 ### 3.5模型继续训练
 
 尽管 `Baichuan2-IEPILE` 和 `LLaMA2-IEPILE` 模型已在多个通用数据集上接受了广泛的指令微调，并因此获得了一定的通用信息抽取能力，但它们在特定领域(如`法律`、`教育`、`科学`、`电信`)的数据处理上可能仍显示出一定的局限性。针对这一挑战，建议对这些模型在特定领域的数据集上进行二次训练。这将有助于模型更好地适应特定领域的语义和结构特征，从而显著增强其在该领域内的信息抽取能力。
@@ -439,3 +449,5 @@ python ie2instruction/eval_func.py \
 
 从模型的角度来看，由于计算资源的限制，我们的研究仅评估了两个模型：Baichuan和LLaMA，以及一些基线模型。我们的数据集可以应用于任何其他的大型语言模型（LLMs），如Qwen、ChatGLM。
 
+
+## 致谢,数据集等
