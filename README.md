@@ -1,8 +1,19 @@
-# IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus
-
 <p align="left">
     <b> English | <a href="https://github.com/zjunlp/IEPile/blob/main/README_CN.md">Chinese</a> </b>
 </p>
+
+# IEPile: A Large-Scale Information Extraction Corpus
+
+This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](https://arxiv.org/abs/2402.14710)
+
+[**Datasets**](https://huggingface.co/datasets/zjunlp/iepie) | 
+[**Paper**](https://huggingface.co/papers/2402.14710) | 
+[**Usage**](https://github.com/zjunlp/IEPile?tab=readme-ov-file#3using-iepile-to-train-models) |
+[**Limitations**](https://github.com/zjunlp/IEPile?tab=readme-ov-file#7-limitations) |
+[**Statement & License**](https://github.com/zjunlp/IEPile?tab=readme-ov-file#7-limitations) |
+[**Citation**](https://github.com/zjunlp/IEPile/blob/main/README.md#8-cite) 
+
+> Please note that our IEPile may undergo **updates** (we will inform you upon their release). It is recommended to utilize the most current version.
 
 
 - [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](#iepile-unearthing-large-scale-schema-based-information-extraction-corpus)
@@ -28,6 +39,8 @@
   - [5.Evaluation](#5evaluation)
 - [6. Statement and License](#6-statement-and-license)
 - [7. Limitations](#7-limitations)
+- [8. Cite](#7-cite)
+- [9. Acknowledgements](#8-acknowledgements)
 
 
 ## 🎯1.Introduction
@@ -39,7 +52,7 @@
 > Please be aware that the data contained in the dataset links provided above has already excluded any part related to the ACE2005 dataset. Should you require access to the unfiltered, complete dataset and have successfully obtained the necessary permissions, please do not hesitate to contact us via email at guihonghao@zju.edu.cn or zhangningyu@zju.edu.cn. We will provide the complete dataset resources for your use.
 
 
-Model download links for **`LLaMA2-IEPILE`** | **`Baichuan2-IEPILE`** | **`KnowLM-IE-v2`**: [zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/KnowLM-IE-v2]()
+Model download links for **`LLaMA2-IEPILE`** | **`Baichuan2-IEPILE`** | **`knowlm-ie-v2(based on Baichuan2)`**: [zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/KnowLM-IE-v2]()
 
 
 **Large Language Models (LLMs)** demonstrate remarkable potential across various domains; however, they exhibit a significant performance gap in **Information Extraction (IE)**. Note that high-quality instruction data is the vital key for enhancing the specific capabilities of LLMs, while current IE datasets tend to be small in scale, fragmented, and lack standardized schema. To this end, we introduce **IEPILE**, a comprehensive bilingual (English and Chinese) IE instruction corpus, which contains approximately **0.32B** tokens. We construct IEPILE by collecting and cleaning 33 existing IE datasets, and introduce schema-based instruction generation to unearth a large-scale corpus. Experimental results on LLaMA and Baichuan demonstrate that using IEPILE can enhance the performance of LLMs for IE, especially the zero-shot generalization. We open-source the resource and pre-trained models, hoping to provide valuable support to the NLP community.
@@ -449,4 +462,13 @@ From the data perspective, our study primarily focuses on schema-based IE, which
 Additionally, we do not explore the field of Open Information Extraction (Open IE); however, if we remove schema constraints, our dataset would be suitable for Open IE scenarios.
 Besides, IEPILE is confined to data in English and Chinese, and in the future, we hope to include data in more languages.
 
-From the model perspective, due to computational resource limitations, our research only assessed two models: Baichuan and LLaMA, along with some baseline models. Our dataset can be applied to any other large language models (LLMs), such as Qwen, ChatGLM.
+From the model perspective, due to computational resource limitations, our research only assessed two models: Baichuan and LLaMA, along with some baseline models. Our dataset can be applied to any other large language models (LLMs), such as Qwen, ChatGLM, Gemma.
+
+# 8. Cite
+If you use the IEPile or the code, please cite the paper:
+
+
+
+# 9. Acknowledgements
+
+We are very grateful for the inspiration provided by the [MathPile](mathpile) and [KnowledgePile](https://huggingface.co/datasets/Query-of-CC/Knowledge_Pile) projects.
