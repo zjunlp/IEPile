@@ -1,3 +1,13 @@
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
 <p align="left">
     <b> <a href="https://github.com/zjunlp/IEPile/tree/main">English</a> | 简体中文 </b>
 </p>
@@ -37,7 +47,7 @@
   - [7.声明和许可](#7声明和许可)
   - [8.局限](#8局限)
   - [9.引用](#9引用)
-  - [10. 致谢](#10-致谢)
+  - [10.致谢](#10致谢)
 
 
 ## 1.介绍
@@ -58,7 +68,7 @@
 
 本研究采用了所提出的“`基于schema的轮询指令构造方法`”，成功创建了一个名为 **IEPile** 的大规模高质量IE微调数据集，包含约`0.32B` tokens。
 
-基于**IEPile**，我们对 `Baichuan2-13B-Chat` 和 `LLaMA2-13B-Chat` 模型应用了 `Lora` 技术进行了微调。实验证明，微调后的 `Baichuan2-IEPile` 和 `LLaMA2-IEPile` 模型在全监督训练集上成绩斐然，并且在**零样本信息提取任务**中取得了显著进步。
+基于**IEPile**，我们对 `Baichuan2-13B-Chat` 和 `LLaMA2-13B-Chat` 模型应用了 `Lora` 技术进行了微调。实验证明，微调后的 `Baichuan2-IEPile` 和 `LLaMA2-IEPile` 模型在全监督训练集上取得了可比的结果，并且在**零样本信息提取任务**中取得了显著进步。
 
 
 ![zero_en](./assets/zero_en.jpg)
@@ -196,12 +206,6 @@ IEPile
 以下是本仓库代码支持的一些基础模型：[[llama](https://huggingface.co/meta-llama), [alpaca](https://github.com/tloen/alpaca-lora), [vicuna](https://huggingface.co/lmsys), [zhixi](https://github.com/zjunlp/KnowLM), [falcon](https://huggingface.co/tiiuae), [baichuan](https://huggingface.co/baichuan-inc), [chatglm](https://huggingface.co/THUDM), [qwen](https://huggingface.co/Qwen), [moss](https://huggingface.co/fnlp), [openba](https://huggingface.co/OpenBA)]
 
 
-**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(基于Baichuan2)`** 模型下载链接：[zjunlp/llama2-13b-IEPile-lora](https://huggingface.co/zjunlp/llama2-13b-IEPile-lora/tree/main) | [zjunlp/baichuan2-13b-IEPile-lora](https://huggingface.co/zjunlp/baichuan2-13b-IEPile-lora) | [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
-
-
-**`LLaMA2-IEPile`**, **`Baichuan2-IEPile`** 是IEPILE论文中涉及的在 `LLaMA2-13B-Chat`, `Baichuan2-13B-Chat` 上Lora微调得到的两个模型。
-
-
 
 ```bash
 mkdir data         # 数据放这
@@ -219,7 +223,7 @@ mkdir lora         # lora微调结果放这
 ```bash
 output_dir='lora/llama2-13b-chat-v1'
 mkdir -p ${output_dir}
-CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port=1287 src/test_finetune.py \
+CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 src/finetune.py \
     --do_train --do_eval \
     --overwrite_output_dir \
     --model_name_or_path 'models/llama2-13b-chat' \
@@ -229,8 +233,8 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
     --train_file 'data/train.json' \
     --valid_file 'data/dev.json' \
     --output_dir=${output_dir} \
-    --per_device_train_batch_size 24 \
-    --per_device_eval_batch_size 24 \
+    --per_device_train_batch_size 2 \
+    --per_device_eval_batch_size 2 \
     --gradient_accumulation_steps 4 \
     --preprocessing_num_workers 16 \
     --num_train_epochs 10 \
@@ -240,7 +244,6 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
     --max_source_length 400 \
     --cutoff_len 700 \
     --max_target_length 300 \
-    --report_to tensorboard \
     --evaluation_strategy "epoch" \
     --save_strategy "epoch" \
     --save_total_limit 10 \
@@ -257,11 +260,11 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
 * `train_file`, `valid_file（可选）`: 训练集和验证集的**文件路径**。注意：目前仅支持json格式的文件。
 * `output_dir`: LoRA微调后的**权重参数保存路径**。
 * `val_set_size`: **验证集的样本数量**, 默认为1000。
-* `per_device_train_batch_size`, `per_device_eval_batch_size`: 每台GPU设备上的`batch_size`, 根据显存大小调整。
+* `per_device_train_batch_size`, `per_device_eval_batch_size`: 每台GPU设备上的`batch_size`, 根据显存大小调整, RTX3090建议设置2~4。
 * `max_source_length`, `max_target_length`, `cutoff_len`: 最大输入、输出长度、截断长度, 截断长度可以简单地视作最大输入长度 + 最大输出长度, 需根据具体需求和显存大小设置合适值。
 * `deepspeed`: 设备资源不够可去掉。
 
-> 可通过设置 `bits` = 8 或 4 进行量化。
+> 可通过设置 `bits` = 4 进行量化, RTX3090建议量化。
 
 * 要了解更多关于**参数配置**的信息，请参考 [src/utils/args](./src/args) 目录。
 
@@ -310,22 +313,26 @@ python ie2instruction/convert_func.py \
 
 #### 4.2继续训练
 
+**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(基于Baichuan2)`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
+
+
+
 ```bash
 output_dir='lora/llama2-13b-chat-v1-continue'
 mkdir -p ${output_dir}
-CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port=1287 src/test_finetune.py \
+CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 src/finetune.py \
     --do_train --do_eval \
     --overwrite_output_dir \
     --model_name_or_path 'models/llama2-13B-Chat' \
-    --checkpoint_dir 'zjunlp/llama2-13b-iepile-lora' \
+    --checkpoint_dir 'lora/llama2-13b-iepile-lora' \
     --stage 'sft' \
     --model_name 'llama' \
     --template 'llama2' \
     --train_file 'data/train.json' \
     --valid_file 'data/dev.json' \
     --output_dir=${output_dir} \
-    --per_device_train_batch_size 24 \
-    --per_device_eval_batch_size 24 \
+    --per_device_train_batch_size 2 \
+    --per_device_eval_batch_size 2 \
     --gradient_accumulation_steps 4 \
     --preprocessing_num_workers 16 \
     --num_train_epochs 10 \
@@ -335,7 +342,6 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
     --max_source_length 400 \
     --cutoff_len 700 \
     --max_target_length 300 \
-    --report_to tensorboard \
     --evaluation_strategy "epoch" \
     --save_strategy "epoch" \
     --save_total_limit 10 \
@@ -347,7 +353,7 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
 
 * 若要基于微调后的LoRA权重继续训练，仅需将 `checkpoint_dir` 参数指向LoRA权重路径，例如设置为`'zjunlp/llama2-13b-iepile-lora'`。
 
-> 可通过设置 `bits` = 8 或 4 进行量化。
+> 可通过设置 `bits` = 4 进行量化, RTX3090建议量化。
 
 > 请注意，在使用 **`LLaMA2-IEPile`** 或 **`Baichuan2-IEPile`** 时，保持lora_r和lora_alpha均为64，对于这些参数，我们不提供推荐设置。
 
@@ -391,7 +397,7 @@ python ie2instruction/convert_func.py \
 CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --stage sft \
     --model_name_or_path 'models/llama2-13B-Chat' \
-    --checkpoint_dir 'zjunlp/llama2-13b-IEPile-lora' \
+    --checkpoint_dir 'lora/llama2-13b-IEPile-lora' \
     --model_name 'llama' \
     --template 'llama2' \
     --do_predict \
@@ -412,7 +418,7 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 * `input_file`, `output_file`: 分别指定输入的测试文件路径和预测结果的输出文件路径。
 * `max_source_length`, `max_new_tokens`: 设置最大的输入长度和生成的新token数量，根据显存大小进行调整。
 
-> 可通过设置 `bits` = 8 或 4 进行量化。
+> 可通过设置 `bits` = 4 进行量化, RTX3090建议量化。
 
 ### 5.3IE专用模型预测
 
@@ -421,7 +427,7 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 ```bash
 CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --stage sft \
-    --model_name_or_path 'zjunlp/KnowLM-IE-v2' \
+    --model_name_or_path 'models/KnowLM-IE-v2' \
     --model_name 'baichuan' \
     --template 'baichuan2' \
     --do_predict \
@@ -436,7 +442,7 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 
 `model_name_or_path`: IE专用模型权重路径
 
-> 可通过设置 `bits` = 8 或 4 进行量化。
+
 
 ## 6.评估
 
@@ -472,5 +478,5 @@ python ie2instruction/eval_func.py \
 
 
 
-## 10. 致谢
+## 10.致谢
 我们非常感谢[MathPile](mathpile)和[KnowledgePile](https://huggingface.co/datasets/Query-of-CC/Knowledge_Pile)项目提供的宝贵灵感。我们对以下数据集构建者和维护者表示特别的谢意：[AnatEM](https://doi.org/10.1093/BIOINFORMATICS/BTT580)、[BC2GM](https://link.springer.com/chapter/10.1007/978-3-030-68763-2_48)、[BC4CHEMD](https://link.springer.com/chapter/10.1007/978-3-030-68763-2_48)、[NCBI-Disease](https://linkinghub.elsevier.com/retrieve/pii/S1532046413001974)、[BC5CDR](https://openreview.net/pdf?id=9EAQVEINuum)、[HarveyNER](https://aclanthology.org/2022.naacl-main.243/)、[CoNLL2003](https://aclanthology.org/W03-0419/)、[GENIA](https://pubmed.ncbi.nlm.nih.gov/12855455/)、[ACE2005](https://catalog.ldc.upenn.edu/LDC2006T06)、[MIT Restaurant](https://ieeexplore.ieee.org/document/6639301)、[MIT Movie](https://ieeexplore.ieee.org/document/6639301)、[FabNER](https://link.springer.com/article/10.1007/s10845-021-01807-x)、[MultiNERD](https://aclanthology.org/2022.findings-naacl.60/)、[Ontonotes](https://aclanthology.org/N09-4006/)、[FindVehicle](https://arxiv.org/abs/2304.10893)、[CrossNER](https://ojs.aaai.org/index.php/AAAI/article/view/17587)、[MSRA NER](https://aclanthology.org/W06-0115/)、[Resume NER](https://aclanthology.org/P18-1144/)、[CLUE NER](https://arxiv.org/abs/2001.04351)、[Weibo NER](https://aclanthology.org/D15-1064/)、[Boson](https://github.com/InsaneLife/ChineseNLPCorpus/tree/master/NER/boson)、[ADE Corpus](https://jbiomedsem.biomedcentral.com/articles/10.1186/2041-1480-3-15)、[GIDS](https://arxiv.org/abs/1804.06987)、[CoNLL2004](https://aclanthology.org/W04-2412/)、[SciERC](https://aclanthology.org/D18-1360/)、[Semeval-RE](https://aclanthology.org/S10-1006/)、[NYT11-HRL](https://ojs.aaai.org/index.php/AAAI/article/view/4688)、[KBP37](https://arxiv.org/abs/1508.01006)、[NYT](https://link.springer.com/chapter/10.1007/978-3-642-15939-8_10)、[Wiki-ZSL](https://aclanthology.org/2021.naacl-main.272/)、[FewRel](https://aclanthology.org/D18-1514/)、[CMeIE](https://link.springer.com/chapter/10.1007/978-3-030-60450-9_22)、[DuIE](https://link.springer.com/chapter/10.1007/978-3-030-32236-6_72)、[COAE2016](https://github.com/Sewens/COAE2016)、[IPRE](https://arxiv.org/abs/1907.12801)、[SKE2020](https://aistudio.baidu.com/datasetdetail/177191)、[CASIE](https://ojs.aaai.org/index.php/AAAI/article/view/6401)、[PHEE](https://aclanthology.org/2022.emnlp-main.376/)、[CrudeOilNews](https://aclanthology.org/2022.lrec-1.49/)、[RAMS](https://aclanthology.org/2020.acl-main.718/)、[WikiEvents](https://aclanthology.org/2021.naacl-main.69/)、[DuEE](https://link.springer.com/chapter/10.1007/978-3-030-60457-8_44)、[DuEE-Fin](https://link.springer.com/chapter/10.1007/978-3-031-17120-8_14)、[FewFC](https://ojs.aaai.org/index.php/AAAI/article/view/17720)、[CCF law](https://aistudio.baidu.com/projectdetail/4201483)等，这些数据集极大地促进了本研究的进展。我们也要对[InstructUIE](http://arxiv.org/abs/2304.08085)与[YAYI-UIE](http://arxiv.org/abs/2312.15548)为数据和模型在信息抽取领域做出的宝贵贡献表示感激。我们的研究成果同样得益于他们的创新和努力。此外，我们要对[hiyouga/LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory)表示衷心的感谢，我们的微调代码实现在很大程度上参考了他们的工作。通过这些学术资源的辅助，我们得以完成本项研究，对此我们深表感激。

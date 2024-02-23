@@ -1,3 +1,13 @@
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
 <p align="left">
     <b> English | <a href="https://github.com/zjunlp/IEPile/blob/main/README_CN.md">Chinese</a> </b>
 </p>
@@ -197,12 +207,6 @@ Here are some of the models supported by the code in this repository:
 [[llama](https://huggingface.co/meta-llama), [alpaca](https://github.com/tloen/alpaca-lora), [vicuna](https://huggingface.co/lmsys), [zhixi](https://github.com/zjunlp/KnowLM), [falcon](https://huggingface.co/tiiuae), [baichuan](https://huggingface.co/baichuan-inc), [chatglm](https://huggingface.co/THUDM), [qwen](https://huggingface.co/Qwen), [moss](https://huggingface.co/fnlp), [openba](https://huggingface.co/OpenBA)]
 
 
-Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(based on Baichuan2)`**: [zjunlp/llama2-13b-IEPile-lora](https://huggingface.co/zjunlp/llama2-13b-IEPile-lora/tree/main) | [zjunlp/baichuan2-13b-IEPile-lora](https://huggingface.co/zjunlp/baichuan2-13b-IEPile-lora) | [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
-
-
-**`LLaMA2-IEPile`** and **`Baichuan2-IEPile`** are two models mentioned in the IEPile paper that were fine-tuned on `LLaMA2-13B-Chat` and `Baichuan2-13B-Chat` using LoRA.
-
-
 ```bash
 mkdir data         # Put data here
 mkdir models       # Put base models here
@@ -223,7 +227,7 @@ Data should be placed in the `./data` directory.
 ```bash
 output_dir='lora/llama2-13b-chat-v1'
 mkdir -p ${output_dir}
-CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port=1287 src/test_finetune.py \
+CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 src/test_finetune.py \
     --do_train --do_eval \
     --overwrite_output_dir \
     --model_name_or_path 'models/llama2-13b-chat' \
@@ -233,8 +237,8 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
     --train_file 'data/train.json' \
     --valid_file 'data/dev.json' \
     --output_dir=${output_dir} \
-    --per_device_train_batch_size 24 \
-    --per_device_eval_batch_size 24 \
+    --per_device_train_batch_size 2 \
+    --per_device_eval_batch_size 2 \
     --gradient_accumulation_steps 4 \
     --preprocessing_num_workers 16 \
     --num_train_epochs 10 \
@@ -244,7 +248,6 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
     --max_source_length 400 \
     --cutoff_len 700 \
     --max_target_length 300 \
-    --report_to tensorboard \
     --evaluation_strategy "epoch" \
     --save_strategy "epoch" \
     --save_total_limit 10 \
@@ -260,11 +263,11 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
 * `train_file`, `valid_file (optional)`: The **file paths** for the training set and validation set. Note: Currently, the format for files only supports **JSON format**.
 * `output_dir`: The **path to save the weight parameters** after LoRA fine-tuning.
 * `val_set_size`: The number of samples in the **validation set**, default is 1000.
-* `per_device_train_batch_size`, `per_device_eval_batch_size`: The `batch_size` on each GPU device, adjust according to the size of the memory.
+* `per_device_train_batch_size`, `per_device_eval_batch_size`: The `batch_size` on each GPU device, adjust according to the size of the memory. For RTX3090, it is recommended to set between 2 and 4.
 * `max_source_length`, `max_target_length`, `cutoff_len`: The maximum input and output lengths, and the cutoff length, which can simply be considered as the maximum input length + maximum output length. Set appropriate values according to specific needs and memory size.
 * `deepspeed`: Remove if there is not enough device resources.
 
-> Quantization can be performed by setting `bits` to 8 or 4.
+> Quantization can be performed by setting bits to 4; it is recommended for the RTX3090.
 
 To learn more about parameter configuration, please refer to the [src/utils/args](./src/args). 
 
@@ -317,10 +320,14 @@ The converted training data will contain four fields: `task`, `source`, `instruc
 ### 4.2Continued Training
 
 
+Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(based on Baichuan2)`**: [zjunlp/llama2-13b-IEPile-lora](https://huggingface.co/zjunlp/llama2-13b-IEPile-lora/tree/main) | [zjunlp/baichuan2-13b-IEPile-lora](https://huggingface.co/zjunlp/baichuan2-13b-IEPile-lora) | [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
+
+
+
 ```bash
 output_dir='lora/llama2-13b-chat-v1-continue'
 mkdir -p ${output_dir}
-CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port=1287 src/test_finetune.py \
+CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 src/test_finetune.py \
     --do_train --do_eval \
     --overwrite_output_dir \
     --model_name_or_path 'models/llama2-13B-Chat' \
@@ -331,8 +338,8 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
     --train_file 'data/train.json' \
     --valid_file 'data/dev.json' \
     --output_dir=${output_dir} \
-    --per_device_train_batch_size 24 \
-    --per_device_eval_batch_size 24 \
+    --per_device_train_batch_size 2 \
+    --per_device_eval_batch_size 2 \
     --gradient_accumulation_steps 4 \
     --preprocessing_num_workers 16 \
     --num_train_epochs 10 \
@@ -342,7 +349,6 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
     --max_source_length 400 \
     --cutoff_len 700 \
     --max_target_length 300 \
-    --report_to tensorboard \
     --evaluation_strategy "epoch" \
     --save_strategy "epoch" \
     --save_total_limit 10 \
@@ -354,7 +360,7 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
 
 * To continue training based on the fine-tuned LoRA weights, simply point the `--checkpoint_dir` parameter to the path of the LoRA weights, for example by setting it to `'zjunlp/llama2-13b-iepile-lora'`.
 
-> Quantization can be performed by setting `bits` to 8 or 4.
+> Quantization can be performed by setting bits to 4; it is recommended for the RTX3090.
 
 
 > Please note that when using **`LLaMA2-IEPile`** or **`Baichuan2-IEPile`**, keep both lora_r and lora_alpha at 64. We do not provide recommended settings for these parameters.
@@ -399,7 +405,7 @@ Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** : [zjunlp/
 CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --stage sft \
     --model_name_or_path 'models/llama2-13B-Chat' \
-    --checkpoint_dir 'zjunlp/llama2-13b-IEPile-lora' \
+    --checkpoint_dir 'lora/llama2-13b-IEPile-lora' \
     --model_name 'llama' \
     --template 'llama2' \
     --do_predict \
@@ -420,17 +426,18 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 * `input_file`, `output_file`: Specify the input path for the test file and the output path for the prediction results, respectively.
 * `max_source_length`, `max_new_tokens`: Set the maximum input length and the number of new tokens to be generated, adjusting according to device performance.
 
-> Quantization can be performed by setting `bits` to 8 or 4.
+> Quantization can be performed by setting bits to 4; it is recommended for the RTX3090.
 
 
 ### 5.3IE-Specific Model Prediction
 
 Model download links for **`knowlm-ie-v2(based on Baichuan2)`**: [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
 
+
 ```bash
 CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --stage sft \
-    --model_name_or_path 'zjunlp/KnowLM-IE-v2' \
+    --model_name_or_path 'models/KnowLM-IE-v2' \
     --model_name 'baichuan' \
     --template 'baichuan2' \
     --do_predict \
@@ -445,7 +452,6 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 
 `model_name_or_path`: The path to the weights of the model specialized for Information Extraction (IE).
 
-> Quantization can be performed by setting `bits` to 8 or 4.
 
 
 ## 6.Evaluation

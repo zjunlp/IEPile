@@ -162,7 +162,8 @@ def init_adapter(
 
             for checkpoint in checkpoints_to_merge:
                 model = PeftModel.from_pretrained(model, checkpoint)
-                model = model.merge_and_unload()
+                if model_args.bits >= 16:
+                    model = model.merge_and_unload()
 
             if len(checkpoints_to_merge) > 0:
                 logger.info("Merged model checkpoint(s): {}.".format(checkpoints_to_merge))

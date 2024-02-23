@@ -116,14 +116,14 @@ python ie2instruction/convert_func.py \
     --tgt_path data/NER/test.json \
     --schema_path data/NER/schema.json \
     --language zh \
-    --task NER \
+    --task NEr \
     --split_num 6 \
     --split test
 
 训练集数据生成:
 python ie2instruction/convert_func.py \
     --src_path data/NER/sample.json \
-    --tgt_path data/NER/test.json \
+    --tgt_path data/NER/train.json \
     --schema_path data/NER/schema.json \
     --language zh \
     --task NER \

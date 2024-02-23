@@ -83,7 +83,7 @@ def evaluate(options):
 
         if options.sort_by:
             cate_dict[value[options.sort_by]].count_instance(
-                gold_list=label_kgs, pred_list=converted_preds, return_result=False
+                gold_list=label_kgs, pred_list=converted_preds
             )
         total_counter.count_instance(
             gold_list=label_kgs, pred_list=converted_preds
@@ -110,8 +110,8 @@ def evaluate(options):
 def main():
     '''
     python ie2instruction/eval_func.py \
-        --path1 data/NER/processed.json \
-        --task NER \
+        --path1 results/baichuan2-13b-iepile-lora_output.json \
+        --task RE \
         --sort_by source 
     '''
     parse = argparse.ArgumentParser()

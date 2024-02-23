@@ -1,7 +1,7 @@
-CUDA_VISIBLE_DEVICES=0 python src/inference.py \
+CUDA_VISIBLE_DEVICES=2 python src/inference.py \
     --stage sft \
     --model_name_or_path 'models/llama2-13b-chat' \
-    --checkpoint_dir 'zjunlp/llama2-13b-iepile-lora' \
+    --checkpoint_dir 'lora/llama2-13b-iepile-lora' \
     --model_name 'llama' \
     --template 'llama2' \
     --do_predict \
@@ -12,4 +12,4 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --predict_with_generate \
     --max_source_length 512 \
     --bf16 \
-    --max_new_tokens 300
+    --max_new_tokens 300 

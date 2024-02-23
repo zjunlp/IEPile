@@ -11,7 +11,7 @@ from model.loader import load_model_and_tokenizer
 from datamodule.preprocess import preprocess_dataset
 from utils.general_utils import get_model_tokenizer_trainer, get_model_name
 from utils.logging import get_logger
-
+from tqdm import tqdm
 
 if torch.cuda.is_available():
     device = "cuda"
@@ -61,6 +61,7 @@ def inference(model_args, data_args, training_args, finetuning_args, generating_
         generating_args,
         **kwargs,
     ):
+        input_length = len(input_ids)
         input_ids = torch.tensor(input_ids, dtype=torch.long).unsqueeze(0)
         input_ids = input_ids.to(device)
         generation_config = GenerationConfig(
@@ -82,6 +83,7 @@ def inference(model_args, data_args, training_args, finetuning_args, generating_
                 **kwargs,
             )
         generation_output = generation_output.sequences[0]
+        generation_output = generation_output[input_length:]
         output = tokenizer.decode(generation_output, skip_special_tokens=True)
         return output
 
@@ -100,10 +102,9 @@ def inference(model_args, data_args, training_args, finetuning_args, generating_
     with open(inference_args.output_file, 'w') as writer:
         for record, model_inputs in zip(records, predict_dataset["input_ids"]):
             result = evaluate(model_inputs, generating_args)
-            print(cnt, result)
+            print(result)
             record['output'] = result
             writer.write(json.dumps(record, ensure_ascii=False)+'\n') 
-            cnt += 1
 
 
 
