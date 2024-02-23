@@ -48,7 +48,7 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
 > Please be aware that the data contained in the dataset links provided above has already excluded any part related to the ACE2005 dataset. Should you require access to the unfiltered, complete dataset and have successfully obtained the necessary permissions, please do not hesitate to contact us via email at guihonghao@zju.edu.cn or zhangningyu@zju.edu.cn. We will provide the complete dataset resources for your use.
 
 
-Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(based on Baichuan2)`**: [zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/KnowLM-IE-v2]()
+Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(based on Baichuan2)`**: [zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
 
 
 ![statistic](./assets/statistic.jpg)
@@ -197,7 +197,7 @@ Here are some of the models supported by the code in this repository:
 [[llama](https://huggingface.co/meta-llama), [alpaca](https://github.com/tloen/alpaca-lora), [vicuna](https://huggingface.co/lmsys), [zhixi](https://github.com/zjunlp/KnowLM), [falcon](https://huggingface.co/tiiuae), [baichuan](https://huggingface.co/baichuan-inc), [chatglm](https://huggingface.co/THUDM), [qwen](https://huggingface.co/Qwen), [moss](https://huggingface.co/fnlp), [openba](https://huggingface.co/OpenBA)]
 
 
-Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`KnowLM-IE-v2`**: [zjunlp/llama2-13b-IEPile-lora](https://huggingface.co/zjunlp/llama2-13b-IEPile-lora/tree/main) | [zjunlp/baichuan2-13b-IEPile-lora](https://huggingface.co/zjunlp/baichuan2-13b-IEPile-lora) | [zjunlp/KnowLM-IE-v2]()
+Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(based on Baichuan2)`**: [zjunlp/llama2-13b-IEPile-lora](https://huggingface.co/zjunlp/llama2-13b-IEPile-lora/tree/main) | [zjunlp/baichuan2-13b-IEPile-lora](https://huggingface.co/zjunlp/baichuan2-13b-IEPile-lora) | [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
 
 
 **`LLaMA2-IEPile`** and **`Baichuan2-IEPile`** are two models mentioned in the IEPile paper that were fine-tuned on `LLaMA2-13B-Chat` and `Baichuan2-13B-Chat` using LoRA.
@@ -368,8 +368,8 @@ The script can be found at [ft_scripts/fine_continue.bash](./ft_scripts/fine_con
 
 ## 5.Prediction
 
-### 5.1Test Data Conversion
 
+### 5.1Test Data Conversion
 
 Before preparing the test data conversion, please visit the [data](./data) directory to understand the data structure required for each task: 1) For the input data format, see `sample.json`. 2) For the schema format, please refer to `schema.json`. 3) For the format of the transformed data, refer to `train.json`. **Unlike training data, test data input does not need to include annotation fields (`entity`, `relation`, `event`)**.
 
@@ -391,6 +391,9 @@ The `label` field will be used for subsequent evaluation. If the input data lack
 
 
 ### 5.2Basic Model + LoRA Prediction
+
+Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** : [zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) 
+
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python src/inference.py \
@@ -421,6 +424,8 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 
 
 ### 5.3IE-Specific Model Prediction
+
+Model download links for **`knowlm-ie-v2(based on Baichuan2)`**: [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python src/inference.py \

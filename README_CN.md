@@ -49,7 +49,7 @@
 > 请注意，以上提供的数据集链接中所含数据已经排除了与ACE2005数据集相关的部分。若您需要访问未经过滤的完整数据集，并且已成功获取所需的权限，敬请通过电子邮件方式联系 guihonghao@zju.edu.cn 或 zhangningyu@zju.edu.cn。我们将提供完整数据集资源。
 
 
-**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`KnowLM-IE-v2`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/KnowLM-IE-v2]()
+**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(基于Baichuan2)`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
 
 
 ![statistic](./assets/statistic.jpg)
@@ -196,7 +196,7 @@ IEPile
 以下是本仓库代码支持的一些基础模型：[[llama](https://huggingface.co/meta-llama), [alpaca](https://github.com/tloen/alpaca-lora), [vicuna](https://huggingface.co/lmsys), [zhixi](https://github.com/zjunlp/KnowLM), [falcon](https://huggingface.co/tiiuae), [baichuan](https://huggingface.co/baichuan-inc), [chatglm](https://huggingface.co/THUDM), [qwen](https://huggingface.co/Qwen), [moss](https://huggingface.co/fnlp), [openba](https://huggingface.co/OpenBA)]
 
 
-**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`KnowLM-IE-v2`** 模型下载链接：[zjunlp/llama2-13b-IEPile-lora](https://huggingface.co/zjunlp/llama2-13b-IEPile-lora/tree/main) | [zjunlp/baichuan2-13b-IEPile-lora](https://huggingface.co/zjunlp/baichuan2-13b-IEPile-lora) | [zjunlp/KnowLM-IE-v2]()
+**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(基于Baichuan2)`** 模型下载链接：[zjunlp/llama2-13b-IEPile-lora](https://huggingface.co/zjunlp/llama2-13b-IEPile-lora/tree/main) | [zjunlp/baichuan2-13b-IEPile-lora](https://huggingface.co/zjunlp/baichuan2-13b-IEPile-lora) | [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
 
 
 **`LLaMA2-IEPile`**, **`Baichuan2-IEPile`** 是IEPILE论文中涉及的在 `LLaMA2-13B-Chat`, `Baichuan2-13B-Chat` 上Lora微调得到的两个模型。
@@ -384,6 +384,9 @@ python ie2instruction/convert_func.py \
 
 ### 5.2基础模型+Lora预测
 
+**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora)
+
+
 ```bash
 CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --stage sft \
@@ -413,6 +416,8 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 
 ### 5.3IE专用模型预测
 
+**`knowlm-ie-v2(based on Baichuan2)`** 模型下载链接：[zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
+
 ```bash
 CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --stage sft \
@@ -432,7 +437,6 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 `model_name_or_path`: IE专用模型权重路径
 
 > 可通过设置 `bits` = 8 或 4 进行量化。
-
 
 ## 6.评估
 
