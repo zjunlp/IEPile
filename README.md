@@ -2,7 +2,7 @@
     <b> English | <a href="https://github.com/zjunlp/IEPile/blob/main/README_CN.md">Chinese</a> </b>
 </p>
 
-# IEPile: A 0.32B Large-Scale Information Extraction Corpus
+# IEPile: A Large-Scale Information Extraction Corpus
 
 This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](https://arxiv.org/abs/2402.14710)
 
