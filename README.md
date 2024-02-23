@@ -28,6 +28,7 @@
   - [5.Evaluation](#5evaluation)
 - [6. Statement and License](#6-statement-and-license)
 - [7. Limitations](#7-limitations)
+- [8. Acknowledgements(#8-acknowledgements)]
 
 
 ## 🎯1.Introduction
@@ -450,3 +451,8 @@ Additionally, we do not explore the field of Open Information Extraction (Open I
 Besides, IEPILE is confined to data in English and Chinese, and in the future, we hope to include data in more languages.
 
 From the model perspective, due to computational resource limitations, our research only assessed two models: Baichuan and LLaMA, along with some baseline models. Our dataset can be applied to any other large language models (LLMs), such as Qwen, ChatGLM, Gemma.
+
+# 8. Acknowledgements
+
+
+We are very grateful for the inspiration provided by the [MathPile](mathpile) and [KnowledgePile](https://huggingface.co/datasets/Query-of-CC/Knowledge_Pile) projects.
