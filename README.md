@@ -12,9 +12,9 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
 [**Usage**](https://github.com/zjunlp/IEPile?tab=readme-ov-file#3using-iepile-to-train-models) |
 [**Limitations**](https://github.com/zjunlp/IEPile?tab=readme-ov-file#7-limitations) |
 [**Statement & License**](https://github.com/zjunlp/IEPile?tab=readme-ov-file#7-limitations) |
-[**Citation**]() 
+[**Citation**](https://github.com/zjunlp/IEPile/blob/main/README.md#8-cite) 
 
-> Please be aware that our corpus could be updated (we will notify upon release). It is advisable to use the latest version.
+> Please note that our IEPile may undergo **updates** (we will inform you upon their release). It is recommended to utilize the most current version.
 
 
 - [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](#iepile-unearthing-large-scale-schema-based-information-extraction-corpus)
