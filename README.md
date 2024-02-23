@@ -8,7 +8,7 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
 
 [**Datasets**](https://huggingface.co/datasets/zjunlp/iepie) | 
 [**Paper**](https://huggingface.co/papers/2402.14710) | 
-[**Usage**](./README.md#🚴3using-iepile-to-train-models) |
+[**Usage**](./README.md#3using-iepile-to-train-models) |
 [**Limitations**](./README.md#8limitations) |
 [**Statement & License**](./README.md#7statement-and-license) |
 [**Citation**](./README.md#9cite) 
@@ -17,11 +17,11 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
 
 
 - [IEPile: A Large-Scale Information Extraction Corpus](#iepile-a-large-scale-information-extraction-corpus)
-  - [🎯1.Introduction](#1introduction)
-  - [📊2.Data](#2data)
+  - [1.Introduction](#1introduction)
+  - [2.Data](#2data)
     - [2.1Construction of IEPile](#21construction-of-iepile)
     - [2.2Data Format of IEPile](#22data-format-of-iepile)
-  - [🚴3.Using IEPile to Train Models](#3using-iepile-to-train-models)
+  - [3.Using IEPile to Train Models](#3using-iepile-to-train-models)
     - [3.1Environment](#31environment)
     - [3.2Download Data and Models](#32download-data-and-models)
     - [3.4LoRA Fine-tuning](#34lora-fine-tuning)
@@ -39,7 +39,7 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
   - [10.Acknowledgements](#10acknowledgements)
 
 
-## 🎯1.Introduction
+## 1.Introduction
 
 
 **`IEPile`** dataset download links: [Google Drive](https://drive.google.com/file/d/1jPdvXOTTxlAmHkn5XkeaaCFXQkYJk5Ng/view?usp=sharing) | [Hugging Face](https://huggingface.co/datasets/zjunlp/iepile)
@@ -79,7 +79,7 @@ Based on **IEPile**, we fine-tuned the `Baichuan2-13B-Chat` and `LLaMA2-13B-Chat
 </details>
 
 
-## 📊2.Data
+## 2.Data
 
 
 ### 2.1Construction of IEPile
@@ -169,7 +169,7 @@ The data instance belongs to the `NER` task, is part of the `CoNLL2003` dataset,
 
 
 
-## 🚴3.Using IEPile to Train Models
+## 3.Using IEPile to Train Models
 
 ### 3.1Environment
 
