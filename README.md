@@ -8,65 +8,59 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
 
 [**Datasets**](https://huggingface.co/datasets/zjunlp/iepie) | 
 [**Paper**](https://huggingface.co/papers/2402.14710) | 
-[**Usage**](https://github.com/zjunlp/IEPile?tab=readme-ov-file#3using-iepile-to-train-models) |
-[**Limitations**](https://github.com/zjunlp/IEPile?tab=readme-ov-file#7-limitations) |
-[**Statement & License**](https://github.com/zjunlp/IEPile?tab=readme-ov-file#7-limitations) |
-[**Citation**](https://github.com/zjunlp/IEPile/blob/main/README.md#8-cite) 
+[**Usage**](./README.md#🚴3using-IEPile-to-train-models) |
+[**Limitations**](./README.md#7-limitations) |
+[**Statement & License**](./README.md#6-statement-and-license) |
+[**Citation**](./README.md#8-cite) 
 
 > Please note that our IEPile may undergo **updates** (we will inform you upon their release). It is recommended to utilize the most current version.
 
 
-- [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](#iepile-unearthing-large-scale-schema-based-information-extraction-corpus)
+- [IEPile: A Large-Scale Information Extraction Corpus](#iepile-a-large-scale-information-extraction-corpus)
   - [🎯1.Introduction](#1introduction)
   - [📊2.Data](#2data)
-    - [2.1Construction of IEPILE](#21construction-of-iepile)
-    - [2.2Statistics of IEPILE](#22statistics-of-iepile)
-  - [🚴3Using IEPILE to Train Models](#3using-iepile-to-train-models)
+    - [2.1Construction of IEPile](#21construction-of-iepile)
+    - [2.2Data Format of IEPile](#22data-format-of-iepile)
+  - [🚴3.Using IEPile to Train Models](#3using-iepile-to-train-models)
     - [3.1Environment](#31environment)
-    - [3.2Download Data](#32download-data)
-    - [3.3Models](#33models)
+    - [3.2Download Data and Models](#32download-data-and-models)
     - [3.4LoRA Fine-tuning](#34lora-fine-tuning)
       - [3.4.1Fine-tuning LLaMA2 with LoRA](#341fine-tuning-llama2-with-lora)
-      - [3.4.3LoRA Fine-tuning Baichuan2](#343lora-fine-tuning-baichuan2)
-      - [3.4.3LoRA Fine-tuning Other Models](#343lora-fine-tuning-other-models)
-    - [3.5Continued Model Training](#35continued-model-training)
-      - [3.5.1Training Data Conversion](#351training-data-conversion)
-      - [3.5.2Continued Training](#352continued-training)
-  - [4.Prediction](#4prediction)
-    - [4.1Test Data Conversion](#41test-data-conversion)
-    - [4.2IE-Specific Model Prediction](#42ie-specific-model-prediction)
-    - [4.3Basic Model + LoRA Prediction](#43basic-model--lora-prediction)
-  - [5.Evaluation](#5evaluation)
-- [6. Statement and License](#6-statement-and-license)
-- [7. Limitations](#7-limitations)
-- [8. Cite](#7-cite)
-- [9. Acknowledgements](#8-acknowledgements)
+    - [4.Continued Training with In-Domain Data](#4continued-training-with-in-domain-data)
+      - [4.1Training Data Conversion](#41training-data-conversion)
+      - [4.2Continued Training](#42continued-training)
+  - [5.Prediction](#5prediction)
+    - [5.1Test Data Conversion](#51test-data-conversion)
+    - [5.2Basic Model + LoRA Prediction](#52basic-model--lora-prediction)
+    - [5.3IE-Specific Model Prediction](#53ie-specific-model-prediction)
+  - [6.Evaluation](#6evaluation)
+- [7.Statement and License](#7statement-and-license)
+- [8.Limitations](#8limitations)
+- [9.Cite](#9cite)
+- [10.Acknowledgements](#10acknowledgements)
 
 
 ## 🎯1.Introduction
 
 
-**`IEPILE`** dataset download links: [Google Drive](https://drive.google.com/file/d/1jPdvXOTTxlAmHkn5XkeaaCFXQkYJk5Ng/view?usp=sharing) | [Hugging Face](https://huggingface.co/datasets/zjunlp/IEPILE)
+**`IEPile`** dataset download links: [Google Drive](https://drive.google.com/file/d/1jPdvXOTTxlAmHkn5XkeaaCFXQkYJk5Ng/view?usp=sharing) | [Hugging Face](https://huggingface.co/datasets/zjunlp/iepile)
 
 
 > Please be aware that the data contained in the dataset links provided above has already excluded any part related to the ACE2005 dataset. Should you require access to the unfiltered, complete dataset and have successfully obtained the necessary permissions, please do not hesitate to contact us via email at guihonghao@zju.edu.cn or zhangningyu@zju.edu.cn. We will provide the complete dataset resources for your use.
 
 
-Model download links for **`LLaMA2-IEPILE`** | **`Baichuan2-IEPILE`** | **`knowlm-ie-v2(based on Baichuan2)`**: [zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/KnowLM-IE-v2]()
-
-
-**Large Language Models (LLMs)** demonstrate remarkable potential across various domains; however, they exhibit a significant performance gap in **Information Extraction (IE)**. Note that high-quality instruction data is the vital key for enhancing the specific capabilities of LLMs, while current IE datasets tend to be small in scale, fragmented, and lack standardized schema. To this end, we introduce **IEPILE**, a comprehensive bilingual (English and Chinese) IE instruction corpus, which contains approximately **0.32B** tokens. We construct IEPILE by collecting and cleaning 33 existing IE datasets, and introduce schema-based instruction generation to unearth a large-scale corpus. Experimental results on LLaMA and Baichuan demonstrate that using IEPILE can enhance the performance of LLMs for IE, especially the zero-shot generalization. We open-source the resource and pre-trained models, hoping to provide valuable support to the NLP community.
-
+Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(based on Baichuan2)`**: [zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/KnowLM-IE-v2]()
 
 
 ![statistic](./assets/statistic.jpg)
 
 
-We collected a total of 15 English NER datasets, 3 Chinese NER datasets, 8 English RE datasets, 2 Chinese RE datasets, as well as 3 English EE datasets and 2 Chinese EE datasets. Figure 1 shows the statistical information of these datasets, covering a wide range of fields including **general**, **medicine**, **financial**, and more. We not only standardized the data format across various tasks but also conducted a meticulous audit for each dataset, creating detailed **data records** including quantity, domain, schema, and other important information.
+We have meticulously collected and cleaned existing Information Extraction (IE) datasets, integrating a total of 26 English IE datasets and 7 Chinese IE datasets. As shown in Figure 1, these datasets cover multiple domains including **general**, **medical**, **financial**, and others.
 
+In this study, we adopted the proposed "`schema-based batched instruction generation method`" to successfully create a large-scale, high-quality IE fine-tuning dataset named **IEPile**, containing approximately `0.32B` tokens.
 
+Based on **IEPile**, we fine-tuned the `Baichuan2-13B-Chat` and `LLaMA2-13B-Chat` models using the `Lora` technique. Experiments have demonstrated that the fine-tuned `Baichuan2-IEPile` and `LLaMA2-IEPile` models perform remarkably on fully supervised training sets and have achieved significant improvements in **zero-shot information extraction tasks**.
 
-Based on **IEPILE**, we fine-tuned the `Baichuan2-13B-Chat` and `LLaMA2-13B-Chat` models using `Lora` technology. The experimental results showed that the fine-tuned models `Baichuan2-IEPILE` and `LLaMA2-IEPILE` not only achieved comparable results on fully supervised training sets but also saw significant improvements in **zero-shot information extraction**.
 
 
 ![zero_en](./assets/zero_en.jpg)
@@ -89,13 +83,13 @@ Based on **IEPILE**, we fine-tuned the `Baichuan2-13B-Chat` and `LLaMA2-13B-Chat
 ## 📊2.Data
 
 
-### 2.1Construction of IEPILE
+### 2.1Construction of IEPile
 
-We concentrate on schema-based IE, thus the construction of schema within the instructions is crucial. This is because they reflect the specific extraction requirements and are dynamically variable. Previous approaches with existing IE datasets often employ a rather extensive schema processing strategy when constructing instructions, utilizing all schemas within a label set for instruction building, raising two potential issues: 
+We concentrate on instruction-based IE, thus the construction of schema within the instructions is crucial. This is because they reflect the specific extraction requirements and are dynamically variable. Previous approaches with existing IE datasets often employ a rather extensive schema processing strategy when constructing instructions, utilizing all schemas within a label set for instruction building, raising two potential issues: 
 1. **Inconsistency in the number of schema queries within instruction between training and evaluation**. For example, the model's performance will decrease if it is trained on about 20 schema queries but tested with either 10 or 30, even if the training and evaluation schemas are similar in content.
 2. **Inadequate differentiation among schemas in the instructions**. For example, semantically similar schemas like "layoffs", "depart" and "dismissals", may present co-occurrence ambiguities that could confuse the LLMs. Such schemas should co-occur more frequently within the instruction.
 
-Therefore, we introduce the following solutions: 1) Hard Negative Schema; and 2) Batched Instruction Generation.
+Therefore, we introduce the following solutions: 1）Hard Negative Schema; and 2） Batched Instruction Generation.
 
 
 ![iepile](./assets/iepile.jpg)
@@ -117,52 +111,27 @@ Subsequently, we obtain the final schema set $L' = Pos\_L + Neg\_L$. We employ a
 </details>
 
 
-**Instruction Format**
+### 2.2Data Format of IEPile
 
-The **instruction** format of `IEPILE` adopts a JSON-like string structure, which is essentially a dictionary-type string composed of the following three main components:
-(1) **`'instruction'`**, which is the task description outlining the execution goal of the instruction;
-(2) **`'schema'`**, a list of labels to be extracted, clearly indicating the key fields of the information to be extracted;
-(3) **`'input'`**, referring to the source text used for information extraction.
+Each instance in `IEPile` contains four fields: `task`, `source`, `instruction`, and `output`. Below are the explanations for each field:
 
 
-Here is an example of an instruction for executing a NER task:
-```json
-{
-    "instruction": "You are an expert in named entity recognition. Please extract entities that match the schema definition from the input. Return an empty list if the entity type does not exist. Please respond in the format of a JSON string.",
-    "schema": ["location", "else", "organization", "person"],
-    "input": "The objective of the Basic Course on War is to provide for combatants of the EPR basic military knowledge for the armed conflict against the police and military apparatus of the bourgeoisie."
-}
-```
-
-Please note that the above dictionary should be in the format of a JSON string. For the sake of clear demonstration, it has been modified into a dictionary format.
-
-<details>
-  <summary><b>More Tasks</b></summary>
+| Field | Description |
+| :---: | :---: |
+| task | The task to which the instance belongs, one of the five types (`NER`, `RE`, `EE`, `EET`, `EEA`). |
+| source | The dataset to which the instance belongs. |
+| instruction | The instruction for inputting into the model, processed into a JSON string via json.dumps, including three fields: `"instruction"`, `"schema"`, and `"input"`. |
+| output | The output in the format of a dictionary's JSON string, where the key is the schema, and the value is the extracted content. |
 
 
-```json
-{
-    "instruction": "You are an expert in relationship extraction. Please extract relationship triples that match the schema definition from the input. Return an empty list for relationships that do not exist. Please respond in the format of a JSON string.", 
-    "schema": ["children", "country capital", "country of administrative divisions", "company"], 
-    "input": "Born on May 1 , 1927 , in Brichevo , Bessarabia in the present-day Republic of Moldova , Mr. Bertini emigrated to Palestine with his family as a child and pursued musical studies there , in Milan , and in Paris , where he worked with Nadia Boulanger and Arthur Honegger."
-}
-
-{
-    "instruction": "You are an expert in event extraction. Please extract events from the input that conform to the schema definition. Return an empty list for events that do not exist, and return NAN for arguments that do not exist. If an argument has multiple values, please return a list. Respond in the format of a JSON string.", 
-    "schema": [{"event_type": "pardon", "trigger": true, "arguments": ["defendant"]},{"event_type": "extradite", "trigger": true, "arguments": ["person", "agent", "destination", "origin"]}, {"event_type": "sue", "trigger": true, "arguments": ["place", "plaintiff"]}, {"event_type": "start organization", "trigger": true, "arguments": ["organization", "agent", "place"]}], 
-    "input": "Ethical and legal issues in hiring Marinello"
-}
-```
-
-</details>
+In `IEPile`, the **instruction** format of `IEPile` adopts a JSON-like string structure, which is essentially a dictionary-type string composed of the following three main components:
+(1) **`'instruction'`**: Task description, which outlines the task to be performed by the instruction (one of `NER`, `RE`, `EE`, `EET`, `EEA`).
+(2) **`'schema'`**: A list of schemas to be extracted (`entity types`, `relation types`, `event types`).
+(3) **`'input'`**: The text from which information is to be extracted.
 
 The file [instruction.py](./ie2instruction/convert/utils/instruction.py) provides instructions for various tasks.
 
-
-
-### 2.2Statistics of IEPILE
-Based on the aforementioned methods, we obtain a high-quality information extraction instruction dataset, known as **`IEPILE`**. This dataset contains approximately **over 2 million** instruction entries, each comprising of `instruction` and `output` fields, which can be directly used for supervised fine-tuning of models. In terms of storage size, IEPILE occupies about **3GB** of disk space and contains roughly **0.32B** tokens (using the baichuan2 tokenizer).
-
+Below is a **data example**:
 
 ```json
 {
@@ -173,8 +142,13 @@ Based on the aforementioned methods, we obtain a high-quality information extrac
 }
 ```
 
+The data instance belongs to the `NER` task, is part of the `CoNLL2003` dataset, the schema list to be extracted includes ["`person`", "`organization`", "`else`", "`location`"], and the text to be extracted from is "*284 Robert Allenby ( Australia ) 69 71 71 73 , Miguel Angel Martin ( Spain ) 75 70 71 68 ( Allenby won at first play-off hole )*". The output is `{"person": ["Robert Allenby", "Allenby", "Miguel Angel Martin"], "organization": [], "else": [], "location": ["Australia", "Spain"]}`.
+
+> Note that the order of schemas in the output is consistent with the order in the instruction.
+
+
 <details>
-  <summary><b>More Tasks</b></summary>
+  <summary><b>More Tasks Instance</b></summary>
 
 ```json
 {
@@ -195,57 +169,51 @@ Based on the aforementioned methods, we obtain a high-quality information extrac
 </details>
 
 
-Descriptions of the fields:
 
-|Field|Description|
-|:---:|:---:|
-|task|The task demonstrated by the instance, one of the five types (NER, RE, EE, EET, EEA).                           |
-|source|The dataset demonstrated by the instance.|
-|instruction|The instruction inputted into the model, processed into a JSON string by json.dumps, includes `"instruction"`, `"schema"`, and `"input"` fields.|
-|output|The model's output, formatted as a dictionary's JSON string, where the key is the schema and the value is the content extracted.|
-
-
-## 🚴3Using IEPILE to Train Models
+## 🚴3.Using IEPile to Train Models
 
 ### 3.1Environment
 
 Before you begin, make sure to create an appropriate **virtual environment** following the instructions below:
 
 ```bash
-conda create -n IEPILE python=3.9   # Create a virtual environment
-conda activate IEPILE               # Activate the environment
+conda create -n IEPile python=3.9   # Create a virtual environment
+conda activate IEPile               # Activate the environment
 pip install -r requirements.txt     # Install dependencies
 ```
 
 
-### 3.2Download Data
+### 3.2Download Data and Models
 
-**`IEPILE`** dataset download links: [Google Drive](https://drive.google.com/file/d/1jPdvXOTTxlAmHkn5XkeaaCFXQkYJk5Ng/view?usp=sharing) | [Hugging Face](https://huggingface.co/datasets/zjunlp/IEPILE)
+**`IEPile`** dataset download links: [Google Drive](https://drive.google.com/file/d/1jPdvXOTTxlAmHkn5XkeaaCFXQkYJk5Ng/view?usp=sharing) | [Hugging Face](https://huggingface.co/datasets/zjunlp/IEPile)
+
+Here are some of the models supported by the code in this repository:
+[[llama](https://huggingface.co/meta-llama), [alpaca](https://github.com/tloen/alpaca-lora), [vicuna](https://huggingface.co/lmsys), [zhixi](https://github.com/zjunlp/KnowLM), [falcon](https://huggingface.co/tiiuae), [baichuan](https://huggingface.co/baichuan-inc), [chatglm](https://huggingface.co/THUDM), [qwen](https://huggingface.co/Qwen), [moss](https://huggingface.co/fnlp), [openba](https://huggingface.co/OpenBA)]
+
+
+Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`KnowLM-IE-v2`**: [zjunlp/llama2-13b-IEPile-lora](https://huggingface.co/zjunlp/llama2-13b-IEPile-lora/tree/main) | [zjunlp/baichuan2-13b-IEPile-lora](https://huggingface.co/zjunlp/baichuan2-13b-IEPile-lora) | [zjunlp/KnowLM-IE-v2]()
+
+
+**`LLaMA2-IEPile`** and **`Baichuan2-IEPile`** are two models mentioned in the IEPile paper that were fine-tuned on `LLaMA2-13B-Chat` and `Baichuan2-13B-Chat` using LoRA.
+
 
 ```bash
-mkdir results
-mkdir lora
-mkdir data
+mkdir data         # Put data here
+mkdir models       # Put base models here
+mkdir results      # Put prediction results here
+mkdir lora         # Put LoRA fine-tuning results here
 ```
-
 
 Data should be placed in the `./data` directory.
 
 
-
-### 3.3Models
-
-Here are some of the models supported by the code in this repository:
-["`llama`", "`alpaca`", "`vicuna`", "`zhixi`", "`falcon`", "`baichuan`", "`chatglm`", "`qwen`", "`moss`", "`openba`"]
-
-Model download links for **`LLaMA2-IEPILE`** | **`Baichuan2-IEPILE`** | **`KnowLM-IE-v2`**: [zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/KnowLM-IE-v2]()
 
 ### 3.4LoRA Fine-tuning
 
 
 #### 3.4.1Fine-tuning LLaMA2 with LoRA
 
-> Important Note: All the commands below should be executed within the IEPILE directory. For example, if you want to run the fine-tuning script, you should use the following command: `bash ft_scripts/fine_llama.bash`. Please ensure your current working directory is correct.
+> Important Note: All the commands below should be executed within the IEPile directory. For example, if you want to run the fine-tuning script, you should use the following command: `bash ft_scripts/fine_llama.bash`. Please ensure your current working directory is correct.
 
 
 
@@ -283,44 +251,40 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
     --bf16 
 ```
 
-
-* `--model_name`: Specifies the model name you wish to use. The current list of supported models includes: ["`llama`", "`alpaca`", "`vicuna`", "`zhixi`", "`falcon`", "`baichuan`", "`chatglm`", "`qwen`", "`moss`", "`openba`"]. Please note that this parameter should be distinguished from `--model_name_or_path`.
-* `--model_name_or_path`: The path to the model parameters. Please download the corresponding model from HuggingFace.
-* `--template`: The template name being used, which includes: `alpaca`, `baichuan`, `baichuan2`, `chatglm3`, and others. Refer to [src/datamodule/template.py](./src/datamodule/template.py) to see all supported template names, with `alpaca` being the default template.
-* `--train_file`, `--valid_file` (optional): The file paths for the training and validation sets, respectively. If valid_file is not provided, the system will by default allocate a number of samples specified by val_set_size from the file designated by train_file to be the validation set. You can also change the number of samples in the validation set by adjusting the val_set_size parameter. Note: The current format for training, validation, and test files only supports JSON format.
-* `--output_dir`: Sets the path to save the weights after LoRA fine-tuning.
-* `--val_set_size`: Defines the number of samples in the validation set, with the default being 1000.
-* `per_device_train_batch_size`, per_device_eval_batch_size: The batch size per GPU device, with 2-4 being recommended for RTX 3090.
-* `max_source_length`, `max_target_length`, `cutoff_len`: The maximum input length, maximum output length, and cutoff length. The cutoff length can be simply considered as the maximum input length + maximum output length, and should be set to an appropriate value based on specific needs and memory size.
+* `model_name`: Specifies the **name of the model architecture** you want to use (7B, 13B, Base, Chat belong to the same model architecture). Currently supported models include: ["`llama`", "`alpaca`", "`vicuna`", "`zhixi`", "`falcon`", "`baichuan`", "`chatglm`", "`qwen`", "`moss`", "`openba`"]. **Please note**, this parameter should be distinguished from `--model_name_or_path`.
+* `model_name_or_path`: Model path, please download the corresponding model from [HuggingFace](https://huggingface.co/models).
+* `template`: The **name of the template** used, including: `alpaca`, `baichuan`, `baichuan2`, `chatglm3`, etc. Refer to [src/datamodule/template.py](./src/datamodule/template.py) to see all supported template names. The default is the `alpaca` template. **For `Chat` versions of models, it is recommended to use the matching template, while `Base` version models can default to using `alpaca`**.
+* `train_file`, `valid_file (optional)`: The **file paths** for the training set and validation set. Note: Currently, the format for files only supports **JSON format**.
+* `output_dir`: The **path to save the weight parameters** after LoRA fine-tuning.
+* `val_set_size`: The number of samples in the **validation set**, default is 1000.
+* `per_device_train_batch_size`, `per_device_eval_batch_size`: The `batch_size` on each GPU device, adjust according to the size of the memory.
+* `max_source_length`, `max_target_length`, `cutoff_len`: The maximum input and output lengths, and the cutoff length, which can simply be considered as the maximum input length + maximum output length. Set appropriate values according to specific needs and memory size.
+* `deepspeed`: Remove if there is not enough device resources.
 
 To learn more about parameter configuration, please refer to the [src/utils/args](./src/args). 
 
-The specific script for fine-tuning the LLaMA2 model can be found in [ft_scripts/fine_llama.bash](./ft_scripts/fine_llama.bash).
+The specific script for fine-tuning the `LLaMA2-13B-Chat` model can be found in [ft_scripts/fine_llama.bash](./ft_scripts/fine_llama.bash).
+
+
+The specific script for fine-tuning the `Baichuan2-13B-Chat` model can be found in [ft_scripts/fine_baichuan.bash](./ft_scripts/fine_baichuan.bash).bash.
 
 
 
-#### 3.4.3LoRA Fine-tuning Baichuan2
-
-The specific script for fine-tuning the Baichuan2 model can be found in [ft_scripts/fine_baichuan.bash](./ft_scripts/fine_baichuan.bash).bash.
 
 
-#### 3.4.3LoRA Fine-tuning Other Models
+### 4.Continued Training with In-Domain Data
 
-To fine-tune other models, you just need to adjust the `--model_name`, `--template` parameters. For example, for the `alpaca` model, set `--model_name alpaca`, `--template alpaca`, and for the `chatglm3` model, set `--model_name chatglm`, `--template chatglm3`.
-
-
-### 3.5Continued Model Training
-
-Although the `Baichuan2-IEPILE` and `LLaMA2-IEPILE` models have undergone extensive instruction fine-tuning on multiple general datasets and thus possess a degree of general information extraction capability, they may still exhibit certain limitations when processing data in specific domains (such as `law`, `education`, `science`, `telecommunications`). To address this challenge, it is recommended to conduct secondary training of these models on datasets specific to these domains. This will help the models better adapt to the semantic and structural characteristics of the specific domains, significantly enhancing their information extraction capability within those domains.
+Although the `Baichuan2-IEPile` and `LLaMA2-IEPile` models have undergone extensive instruction fine-tuning on multiple general datasets and thus possess a degree of **general information extraction capability**, they may still exhibit certain limitations when processing data in **specific domains** (such as `law`, `education`, `science`, `telecommunications`). To address this challenge, it is recommended to conduct **secondary training** of these models on datasets specific to these domains. This will help the models better adapt to the semantic and structural characteristics of the specific domains, significantly enhancing their **information extraction capability within those domains**.
 
 
-
-#### 3.5.1Training Data Conversion
+#### 4.1Training Data Conversion
 
 Firstly, it's necessary to **format the data** to include `instruction` and `output` fields. For this purpose, we provide a script [convert_func.py](./ie2instruction/convert_func.py), which can batch convert data into a format that can be directly used by the model.
 
 
 > Before using the [convert_func.py](./ie2instruction/convert_func.py) script, please make sure to refer to the [data](./data) directory. This directory provides detailed instructions on the data format required for each task. Refer to `sample.json` to understand the format of the data before conversion, `schema.json` to see the organization of the schema, and `train.json` to describe the data format after conversion.
+
+> Additionally, you can directly use the bilingual (Chinese and English) information extraction dataset [zjunlp/InstructIE](https://huggingface.co/datasets/zjunlp/InstructIE), which includes 12 themes such as characters, vehicles, works of art, natural science, man-made objects, astronomical objects, etc.
 
 
 ```bash
@@ -335,36 +299,36 @@ python ie2instruction/convert_func.py \
     --split train
 ```
 
-* `--language`: Supports two languages, `zh` (Chinese) and `en` (English), with different instruction templates used for different languages.
-* `--task`: Currently supports five types of tasks: ['RE', 'NER', 'EE', 'EET', 'EEA'].
-* `--split_num`: The maximum number of schemas in a single instruction. The default is 4; -1 means no splitting. Recommended splitting numbers vary by task: NER: 6, RE: 4, EE: 4, EET: 4, EEA: 4.
-* `--random_sort`: Whether to randomly sort the schemas in the instruction. The default is False, meaning schemas are sorted alphabetically.
-* `--split`: Indicates the type of data constructed, ['train', 'test']. `train` will include the converted `output`, while `test` will be the `label`.
 
-After conversion, the training data will have four fields: `task`, `source`, `instruction`, and `output`. You can refer to [Statistics of IEPILE](./README.md#22statistics-of-iepile) to view the format and function of each field.
+* `language`: Supports two languages, `zh` (Chinese) and `en` (English), with different instruction templates used for each language.
+* `task`: Currently supports five types of tasks: ['`RE`', '`NER`', '`EE`', '`EET`', '`EEA`'].
+* `split_num`: Defines the maximum number of schemas that can be included in a single instruction. The default value is 4, and setting it to -1 means no splitting is done. The recommended number of task splits varies by task: **6 for NER, and 4 for RE, EE, EET, EEA**.
+* `random_sort`: Whether to randomize the order of schemas in the instructions. The default is False, which means schemas are sorted alphabetically.
+* `split`: Specifies the type of dataset, with options `train` or `test`.
 
-
-#### 3.5.2Continued Training
+The converted training data will contain four fields: `task`, `source`, `instruction`, `output`.
 
 
-* If you are continuing training from the fine-tuned LoRA weights, you only need to set the `--checkpoint_dir` parameter to the path of the fine-tuned LoRA weights, for example, `'zjunlp/llama2-13b-iepile-lora'`.
+#### 4.2Continued Training
 
-* If you are continuing training from the fine-tuned model weights, you only need to set the `--model_name_or_path` parameter to the path of the fine-tuned model weights, for example, `'zjunlp/KnowLM-IE-v2'`.
+* To continue training based on the fine-tuned LoRA weights, simply point the `--checkpoint_dir` parameter to the path of the LoRA weights, for example by setting it to `'zjunlp/llama2-13b-iepile-lora'`.
 
-The specific script for continuing training from the fine-tuned LoRA weights can be found in [ft_scripts/fine_continue.bash](./ft_scripts/fine_continue.bash).
-
-
+> Please note that when using **`LLaMA2-IEPile`** or **`Baichuan2-IEPile`**, keep both lora_r and lora_alpha at 64. We do not provide recommended settings for these parameters.
 
 
-## 4.Prediction
-
-### 4.1Test Data Conversion
+* To continue training based on the fine-tuned model weights, just set the `--model_name_or_path` parameter to the path of the weights, such as `'zjunlp/KnowLM-IE-v2'`, without setting `--checkpoint_dir`.
 
 
-Firstly, it's necessary to **format the data** to include `instruction` and `output` fields. For this purpose, we provide a script [convert_func.py](./ie2instruction/convert_func.py), which can batch convert data into a format that can be directly used by the model.
+The script can be found at [ft_scripts/fine_continue.bash](./ft_scripts/fine_continue.bash).
 
 
-> Before using the [convert_func.py](./ie2instruction/convert_func.py) script, please make sure to refer to the [data](./data) directory. This directory provides detailed instructions on the data format required for each task. Refer to `sample.json` to understand the format of the data before conversion, `schema.json` to see the organization of the schema, and `train.json` to describe the data format after conversion.
+## 5.Prediction
+
+### 5.1Test Data Conversion
+
+
+Before preparing the test data conversion, please visit the [data](./data) directory to understand the data structure required for each task: 1) For the input data format, see `sample.json`. 2) For the schema format, please refer to `schema.json`. 3) For the format of the transformed data, refer to `train.json`. **Unlike training data, test data input does not need to include annotation fields (`entity`, `relation`, `event`)**.
+
 
 ```bash
 python ie2instruction/convert_func.py \
@@ -377,18 +341,42 @@ python ie2instruction/convert_func.py \
     --split test
 ```
 
+When setting `split` to **test**, select the appropriate number of schemas according to the task type: **6 is recommended for NER, while 4 is recommended for RE, EE, EET, EEA**. The transformed test data will contain five fields: `id`, `task`, `source`, `instruction`, `label`.
 
-* `--language`: Supports two languages, `zh` (Chinese) and `en` (English), with different instruction templates used for different languages.
-* `--task`: Currently supports five types of tasks: ['RE', 'NER', 'EE', 'EET', 'EEA'].
-* `--split_num`: The maximum number of schemas in a single instruction. The default is 4; -1 means no splitting. Recommended splitting numbers vary by task: NER: 6, RE: 4, EE: 4, EET: 4, EEA: 4.
-* `--random_sort`: Whether to randomly sort the schemas in the instruction. The default is False, meaning schemas are sorted alphabetically.
-* `--split`: Indicates the type of data constructed, ['train', 'test']. `train` will include the converted `output`, while `test` will be the `label`.
-
-After conversion, the test data will have three fields: `id`, `instruction`, `label`. 
+The `label` field will be used for subsequent evaluation. If the input data lacks the annotation fields (`entity`, `relation`, `event`), the transformed test data will not contain the `label` field, which is suitable for scenarios where no original annotated data is available.
 
 
+### 5.2Basic Model + LoRA Prediction
 
-### 4.2IE-Specific Model Prediction
+```bash
+CUDA_VISIBLE_DEVICES=0 python src/inference.py \
+    --stage sft \
+    --model_name_or_path 'models/llama2-13B-Chat' \
+    --checkpoint_dir 'zjunlp/llama2-13b-IEPile-lora' \
+    --model_name 'llama' \
+    --template 'llama2' \
+    --do_predict \
+    --input_file 'data/input.json' \
+    --output_file 'results/llama2-13b-IEPile-lora_output.json' \
+    --finetuning_type lora \
+    --output_dir 'lora/test' \
+    --predict_with_generate \
+    --max_source_length 512 \
+    --bf16 \
+    --max_new_tokens 300
+```
+
+* During inference, `model_name`, `template`, and `bf16` must be the same as the settings used during training.
+* `model_name_or_path`: Specify the path to the base model being used, which must match the corresponding LoRA model.
+* `checkpoint_dir`: The path to the LoRA weight files.
+* `output_dir`: This parameter does not take effect during inference and any path can be specified.
+* `input_file`, `output_file`: Specify the input path for the test file and the output path for the prediction results, respectively.
+* `max_source_length`, `max_new_tokens`: Set the maximum input length and the number of new tokens to be generated, adjusting according to device performance.
+
+> Quantization can be performed by setting `bits` to 8 or 4.
+
+
+### 5.3IE-Specific Model Prediction
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python src/inference.py \
@@ -406,37 +394,12 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --max_new_tokens 300
 ```
 
-* `--model_name`, `--template`, `--bf16` should be consistent with the settings during training.
-* `--output_dir`: This can be set to any path as it doesn't carry significance for inference.
-* `--input_file`, `--output_file`: The path to the input test file and the path for the prediction output file.
-* `--max_source_length`, `--max_new_tokens`: Maximum input and output lengths, adjusted according to device capabilities.
+`model_name_or_path`: The path to the weights of the model specialized for Information Extraction (IE).
+
+> Quantization can be performed by setting `bits` to 8 or 4.
 
 
-### 4.3Basic Model + LoRA Prediction
-
-```bash
-CUDA_VISIBLE_DEVICES=0 python src/inference.py \
-    --stage sft \
-    --model_name_or_path 'models/llama2-13B-Chat' \
-    --checkpoint_dir 'zjunlp/llama2-13b-iepile-lora' \
-    --model_name 'llama' \
-    --template 'llama2' \
-    --do_predict \
-    --input_file 'data/input.json' \
-    --output_file 'results/llama2-13b-iepile-lora_output.json' \
-    --finetuning_type lora \
-    --output_dir 'lora/test' \
-    --predict_with_generate \
-    --max_source_length 512 \
-    --bf16 \
-    --max_new_tokens 300
-```
-
-* `--checkpoint_dir`: Path to the trained LoRA weights.
-
-
-
-## 5.Evaluation
+## 6.Evaluation
 
 We provide scripts for evaluating the F1 scores for various tasks.
 
@@ -446,29 +409,37 @@ python ie2instruction/eval_func.py \
   --task NER 
 ```
 
-* `--task`: Currently supports five types of tasks: ['RE', 'NER', 'EE', 'EET', 'EEA'].
+* `task`: Currently supports five types of tasks: ['`RE`', '`NER`', '`EE`', '`EET`', '`EEA`'].
+* You can set `sort_by` to `source` to calculate the F1 scores on each dataset separately.
 
 
-# 6. Statement and License
+
+# 7.Statement and License
 We believe that annotated data contains the wisdom of humanity, and its existence is to promote the benefit of all humankind and help enhance our quality of life. We strongly urge all users not to use our corpus for any actions that may harm national or public security or violate legal regulations.
 We have done our best to ensure the quality and legality of the data provided. However, we also recognize that despite our efforts, there may still be some unforeseen issues, such as concerns about data protection and risks and problems caused by data misuse. We will not be responsible for these potential problems.
-For original data that is subject to usage permissions stricter than the [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en) agreement, IEPILE will adhere to those stricter terms. In all other cases, our operations will be based on the [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en) license agreement.
+For original data that is subject to usage permissions stricter than the [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en) agreement, IEPile will adhere to those stricter terms. In all other cases, our operations will be based on the [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en) license agreement.
 
 
 
-# 7. Limitations
+
+# 8.Limitations
 
 From the data perspective, our study primarily focuses on schema-based IE, which limits our ability to generalize to human instructions that do not follow our specific format requirements. 
 Additionally, we do not explore the field of Open Information Extraction (Open IE); however, if we remove schema constraints, our dataset would be suitable for Open IE scenarios.
-Besides, IEPILE is confined to data in English and Chinese, and in the future, we hope to include data in more languages.
+Besides, IEPile is confined to data in English and Chinese, and in the future, we hope to include data in more languages.
 
 From the model perspective, due to computational resource limitations, our research only assessed two models: Baichuan and LLaMA, along with some baseline models. Our dataset can be applied to any other large language models (LLMs), such as Qwen, ChatGLM, Gemma.
 
-# 8. Cite
+
+
+# 9.Cite
 If you use the IEPile or the code, please cite the paper:
 
 
 
-# 9. Acknowledgements
 
-We are very grateful for the inspiration provided by the [MathPile](mathpile) and [KnowledgePile](https://huggingface.co/datasets/Query-of-CC/Knowledge_Pile) projects.
+# 10.Acknowledgements
+We are very grateful for the inspiration provided by the [MathPile](mathpile) and [KnowledgePile](https://huggingface.co/datasets/Query-of-CC/Knowledge_Pile) projects. Special thanks are due to the builders and maintainers of the following datasets: [AnatEM](https://doi.org/10.1093/BIOINFORMATICS/BTT580)、[BC2GM](https://link.springer.com/chapter/10.1007/978-3-030-68763-2_48)、[BC4CHEMD](https://link.springer.com/chapter/10.1007/978-3-030-68763-2_48)、[NCBI-Disease](https://linkinghub.elsevier.com/retrieve/pii/S1532046413001974)、[BC5CDR](https://openreview.net/pdf?id=9EAQVEINuum)、[HarveyNER](https://aclanthology.org/2022.naacl-main.243/)、[CoNLL2003](https://aclanthology.org/W03-0419/)、[GENIA](https://pubmed.ncbi.nlm.nih.gov/12855455/)、[ACE2005](https://catalog.ldc.upenn.edu/LDC2006T06)、[MIT Restaurant](https://ieeexplore.ieee.org/document/6639301)、[MIT Movie](https://ieeexplore.ieee.org/document/6639301)、[FabNER](https://link.springer.com/article/10.1007/s10845-021-01807-x)、[MultiNERD](https://aclanthology.org/2022.findings-naacl.60/)、[Ontonotes](https://aclanthology.org/N09-4006/)、[FindVehicle](https://arxiv.org/abs/2304.10893)、[CrossNER](https://ojs.aaai.org/index.php/AAAI/article/view/17587)、[MSRA NER](https://aclanthology.org/W06-0115/)、[Resume NER](https://aclanthology.org/P18-1144/)、[CLUE NER](https://arxiv.org/abs/2001.04351)、[Weibo NER](https://aclanthology.org/D15-1064/)、[Boson](https://github.com/InsaneLife/ChineseNLPCorpus/tree/master/NER/boson)、[ADE Corpus](https://jbiomedsem.biomedcentral.com/articles/10.1186/2041-1480-3-15)、[GIDS](https://arxiv.org/abs/1804.06987)、[CoNLL2004](https://aclanthology.org/W04-2412/)、[SciERC](https://aclanthology.org/D18-1360/)、[Semeval-RE](https://aclanthology.org/S10-1006/)、[NYT11-HRL](https://ojs.aaai.org/index.php/AAAI/article/view/4688)、[KBP37](https://arxiv.org/abs/1508.01006)、[NYT](https://link.springer.com/chapter/10.1007/978-3-642-15939-8_10)、[Wiki-ZSL](https://aclanthology.org/2021.naacl-main.272/)、[FewRel](https://aclanthology.org/D18-1514/)、[CMeIE](https://link.springer.com/chapter/10.1007/978-3-030-60450-9_22)、[DuIE](https://link.springer.com/chapter/10.1007/978-3-030-32236-6_72)、[COAE2016](https://github.com/Sewens/COAE2016)、[IPRE](https://arxiv.org/abs/1907.12801)、[SKE2020](https://aistudio.baidu.com/datasetdetail/177191)、[CASIE](https://ojs.aaai.org/index.php/AAAI/article/view/6401)、[PHEE](https://aclanthology.org/2022.emnlp-main.376/)、[CrudeOilNews](https://aclanthology.org/2022.lrec-1.49/)、[RAMS](https://aclanthology.org/2020.acl-main.718/)、[WikiEvents](https://aclanthology.org/2021.naacl-main.69/)、[DuEE](https://link.springer.com/chapter/10.1007/978-3-030-60457-8_44)、[DuEE-Fin](https://link.springer.com/chapter/10.1007/978-3-031-17120-8_14)、[FewFC](https://ojs.aaai.org/index.php/AAAI/article/view/17720)、[CCF law](https://aistudio.baidu.com/projectdetail/4201483), and more. These datasets have significantly contributed to the advancement of this research. We are also grateful for the valuable contributions in the field of information extraction made by [InstructUIE](http://arxiv.org/abs/2304.08085) and [YAYI-UIE](http://arxiv.org/abs/2312.15548), both in terms of data and model innovation. Our research results have benefitted from their creativity and hard work as well. Additionally, our heartfelt thanks go to [hiyouga/LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory); our fine-tuning code implementation owes much to their work. The assistance provided by these academic resources has been instrumental in the completion of our research, and for this, we are deeply appreciative.
+
+
+

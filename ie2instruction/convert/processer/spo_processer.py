@@ -32,7 +32,7 @@ class SPOProcesser(Processer):
     
 
     def get_task_record(self, record):
-        return record['relation']
+        return record.get('relation', None)
 
     def get_positive_type_role(self, records):
         positive_type = set()

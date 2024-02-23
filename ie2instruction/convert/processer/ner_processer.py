@@ -29,7 +29,7 @@ class NERProcesser(Processer):
     
 
     def get_task_record(self, record):
-        return record['entity']
+        return record.get('entity', None)
     
     def get_positive_type_role(self, records):
         positive_type = set()

@@ -30,7 +30,7 @@ class EEAProcesser(EEProcesser):
 
 
     def get_task_record(self, record):
-        return record['event']
+        return record.get('event', None)
     
 
     def get_final_schemas(self, total_schemas):

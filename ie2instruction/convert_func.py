@@ -50,9 +50,12 @@ def get_test_data(datas, processer, options):
             sinstruct = multischema_construct_instruction(options.task, options.language, schema, record['text'])
             record2 = {
                 'id': iid,
+                'task': options.task,
+                'source': options.source,
                 'instruction': sinstruct, 
-                'label': json.dumps(task_record, ensure_ascii=False),
             }
+            if task_record is not None:
+                record2['label'] = json.dumps(task_record, ensure_ascii=False)
             results.append(record2)
     return results
 

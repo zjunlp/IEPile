@@ -28,5 +28,6 @@ CUDA_VISIBLE_DEVICES="0,1,2,3,4,5,6,7" torchrun --nproc_per_node=8 --master_port
     --lora_r 16 \
     --lora_alpha 32 \
     --lora_dropout 0.05 \
-    --bf16 
+    --bf16 \
+    --deepspeed configs/ds_config_bf16.json
 

@@ -22,7 +22,7 @@ class EETProcesser(Processer):
     
 
     def get_task_record(self, record):
-        return record['event']
+        return record.get('event', None)
         
 
     def get_positive_type_role(self, records):
