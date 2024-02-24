@@ -59,7 +59,7 @@ We have meticulously collected and cleaned existing Information Extraction (IE) 
 
 In this study, we adopted the proposed "`schema-based batched instruction generation method`" to successfully create a large-scale, high-quality IE fine-tuning dataset named **IEPile**, containing approximately `0.32B` tokens.
 
-Based on **IEPile**, we fine-tuned the `Baichuan2-13B-Chat` and `LLaMA2-13B-Chat` models using the `Lora` technique. Experiments have demonstrated that the fine-tuned `Baichuan2-IEPile` and `LLaMA2-IEPile` models perform remarkably on fully supervised training sets and have achieved significant improvements in **zero-shot information extraction tasks**.
+Based on **IEPile**, we fine-tuned the `Baichuan2-13B-Chat` and `LLaMA2-13B-Chat` models using the `Lora` technique. Experiments have demonstrated that the fine-tuned `Baichuan2-IEPile` and `LLaMA2-IEPile` models perform remarkably on fully supervised training sets and have achieved improvements in **zero-shot information extraction tasks**.
 
 
 
@@ -273,7 +273,7 @@ The specific script for fine-tuning the `Baichuan2-13B-Chat` model can be found 
 
 ## 4.Continued Training with In-Domain Data
 
-Although the `Baichuan2-IEPile` and `LLaMA2-IEPile` models have undergone extensive instruction fine-tuning on multiple general datasets and thus possess a degree of **general information extraction capability**, they may still exhibit certain limitations when processing data in **specific domains** (such as `law`, `education`, `science`, `telecommunications`). To address this challenge, it is recommended to conduct **secondary training** of these models on datasets specific to these domains. This will help the models better adapt to the semantic and structural characteristics of the specific domains, significantly enhancing their **information extraction capability within those domains**.
+Although the `Baichuan2-IEPile` and `LLaMA2-IEPile` models have undergone extensive instruction fine-tuning on multiple general datasets and thus possess a degree of **general information extraction capability**, they may still exhibit certain limitations when processing data in **specific domains** (such as `law`, `education`, `science`, `telecommunications`). To address this challenge, it is recommended to conduct **secondary training** of these models on datasets specific to these domains. This will help the models better adapt to the semantic and structural characteristics of the specific domains, enhancing their **information extraction capability within those domains**.
 
 
 ### 4.1Training Data Conversion
