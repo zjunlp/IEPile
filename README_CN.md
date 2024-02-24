@@ -4,7 +4,7 @@
 
 # IEPile：大规模信息抽取语料库
 
-这是论文 [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](https://arxiv.org/abs/2402.14710) 的官方仓库
+这是论文 [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](https://arxiv.org/abs/2402.14710) 的官方仓库。
 
 
 [**数据集**](https://huggingface.co/datasets/zjunlp/iepie) |
@@ -54,9 +54,9 @@
 
 ![statistic](./assets/statistic.jpg)
 
-我们精心收集并清洗了现有的信息抽取（IE）数据，共整合了`26`个英文IE数据集和`7`个中文IE数据集。如图1所示，这些数据集覆盖了包括**通用**、**医学**、**金融**等多个领域。
+我们精心收集并清洗了现有的信息抽取（IE）数据，共整合了`26`个**英文**IE数据集和`7`个**中文**IE数据集。如图1所示，这些数据集覆盖了包括**通用**、**医学**、**金融**等多个领域。
 
-本研究采用了所提出的“`基于schema的轮询指令构造方法`”，成功创建了一个名为 **IEPile** 的大规模高质量IE微调数据集，包含约`0.32B` tokens。
+本研究采用了所提出的“`基于schema的轮询指令构造方法`”，成功创建了一个名为 **IEPile** 的大规模高质量**双语**(中文和英文)IE指令微调数据集，包含约`0.32B` tokens。
 
 基于**IEPile**，我们对 `Baichuan2-13B-Chat` 和 `LLaMA2-13B-Chat` 模型应用了 `Lora` 技术进行了微调。实验证明，微调后的 `Baichuan2-IEPile` 和 `LLaMA2-IEPile` 模型在全监督训练集上取得了可比的结果，并且在**零样本信息抽取任务**中取得了提升。
 
@@ -135,14 +135,14 @@
 
 ```json
 {
-    "task": "NER", 
-    "source": "CoNLL2003", 
-    "instruction": "{\"instruction\": \"You are an expert in named entity recognition. Please extract entities that match the schema definition from the input. Return an empty list if the entity type does not exist. Please respond in the format of a JSON string.\", \"schema\": [\"person\", \"organization\", \"else\", \"location\"], \"input\": \"284 Robert Allenby ( Australia ) 69 71 71 73 , Miguel Angel Martin ( Spain ) 75 70 71 68 ( Allenby won at first play-off hole )\"}", 
-    "output": "{\"person\": [\"Robert Allenby\", \"Allenby\", \"Miguel Angel Martin\"], \"organization\": [], \"else\": [], \"location\": [\"Australia\", \"Spain\"]}"
+  "task": "NER", 
+  "source": "MSRA", 
+  "instruction": "{\"instruction\": \"你是专门进行实体抽取的专家。请从input中抽取出符合schema定义的实体，不存在的实体类型返回空列表。请按照JSON字符串的格式回答。\", \"schema\": [\"组织机构\", \"地理位置\", \"人物\"], \"input\": \"对于康有为、梁启超、谭嗣同、严复这些从旧文化营垒中走来的年轻“布衣”，他们背负着沉重的历史包袱，能够挣脱旧传统的束缚，为拯救民族的危亡而献身，实在是中华民族的脊梁。\"}", 
+  "output": "{\"组织机构\": [], \"地理位置\": [\"中华\"], \"人物\": [\"康有为\", \"梁启超\", \"谭嗣同\", \"严复\"]}"
 }
 ```
 
-该数据实例所属任务是 `NER`, 所属数据集是 `CoNLL2003`, 待抽取的schema列表是 ["`person`", "`organization`", "`else`", "`location`"], 待抽取的文本是 "*284 Robert Allenby ( Australia ) 69 71 71 73 , Miguel Angel Martin ( Spain ) 75 70 71 68 ( Allenby won at first play-off hole )*", 输出是 `{"person": ["Robert Allenby", "Allenby", "Miguel Angel Martin"], "organization": [], "else": [], "location": ["Australia", "Spain"]}`
+该数据实例所属任务是 `NER`, 所属数据集是 `MSRA`, 待抽取的schema列表是 ["组织机构", "地理位置", "人物"], 待抽取的文本是"*对于康有为、梁启超、谭嗣同、严复这些从旧文化营垒中走来的年轻“布衣”，他们背负着沉重的历史包袱，能够挣脱旧传统的束缚，为拯救民族的危亡而献身，实在是中华民族的脊梁。*", 输出是 `{"组织机构": [], "地理位置": ["中华"], "人物": ["康有为", "梁启超", "谭嗣同", "严复"]}`
 
 > 注意输出中的 schema 顺序与 instruction 中的 schema 顺序一致
 
@@ -153,16 +153,16 @@
 ```json
 {
   "task": "RE", 
-  "source": "NYT11", 
-  "instruction": "{\"instruction\": \"You are an expert in relationship extraction. Please extract relationship triples that match the schema definition from the input. Return an empty list for relationships that do not exist. Please respond in the format of a JSON string.\", \"schema\": [\"neighborhood of\", \"nationality\", \"children\", \"place of death\"], \"input\": \" In the way New Jersey students know that Thomas Edison 's laboratory is in West Orange , the people of Colma know that Wyatt Earp 's ashes are buried at Hills of Eternity , a Jewish cemetery he was n't ; his wife was , and that Joe DiMaggio is at Holy Cross Cemetery , where visitors often lean bats against his gravestone . \"}", 
-  "output": "{\"neighborhood of\": [], \"nationality\": [], \"children\": [], \"place of death\": [{\"subject\": \"Thomas Edison\", \"object\": \"West Orange\"}]}"
+  "source": "DuIE2.0", 
+  "instruction": "{\"instruction\": \"你是专门进行关系抽取的专家。请从input中抽取出符合schema定义的关系三元组，不存在的关系返回空列表。请按照JSON字符串的格式回答。\", \"schema\": [\"国籍\", \"作者\", \"毕业院校\", \"主角\"], \"input\": \"对比日本动画电影在中日两国的票房表现，可以发现，日漫风格的动画，在国内也有圈层限制，即便是宫崎骏《千与千寻》、新海诚《你的名字》，这类日本动画票房榜首的电影，国内票房也停留在5亿左右\"}", 
+  "output": "{\"国籍\": [], \"作者\": [{\"subject\": \"你的名字\", \"object\": \"新海诚\"}], \"毕业院校\": [], \"主角\": []}"
 }
 
 {
   "task": "EE", 
-  "source": "PHEE", 
-  "instruction": "{\"instruction\": \"You are an expert in event extraction. Please extract events from the input that conform to the schema definition. Return an empty list for events that do not exist, and return NAN for arguments that do not exist. If an argument has multiple values, please return a list. Respond in the format of a JSON string.\", \"schema\": [{\"event_type\": \"potential therapeutic event\", \"trigger\": true, \"arguments\": [\"Treatment.Time_elapsed\", \"Treatment.Route\", \"Treatment.Freq\", \"Treatment\", \"Subject.Race\", \"Treatment.Disorder\", \"Effect\", \"Subject.Age\", \"Combination.Drug\", \"Treatment.Duration\", \"Subject.Population\", \"Subject.Disorder\", \"Treatment.Dosage\", \"Treatment.Drug\"]}, {\"event_type\": \"adverse event\", \"trigger\": true, \"arguments\": [\"Subject.Population\", \"Subject.Age\", \"Effect\", \"Treatment.Drug\", \"Treatment.Dosage\", \"Treatment.Freq\", \"Subject.Gender\", \"Treatment.Disorder\", \"Subject\", \"Treatment\", \"Treatment.Time_elapsed\", \"Treatment.Duration\", \"Subject.Disorder\", \"Subject.Race\", \"Combination.Drug\"]}], \"input\": \"Our findings reveal that even in patients without a history of seizures, pregabalin can cause a cortical negative myoclonus.\"}", 
-  "output": "{\"potential therapeutic event\": [], \"adverse event\": [{\"trigger\": \"cause \", \"arguments\": {\"Subject.Population\": \"NAN\", \"Subject.Age\": \"NAN\", \"Effect\": \"cortical negative myoclonus\", \"Treatment.Drug\": \"pregabalin\", \"Treatment.Dosage\": \"NAN\", \"Treatment.Freq\": \"NAN\", \"Subject.Gender\": \"NAN\", \"Treatment.Disorder\": \"NAN\", \"Subject\": \"patients without a history of seizures\", \"Treatment\": \"pregabalin\", \"Treatment.Time_elapsed\": \"NAN\", \"Treatment.Duration\": \"NAN\", \"Subject.Disorder\": \"NAN\", \"Subject.Race\": \"NAN\", \"Combination.Drug\": \"NAN\"}}]}"
+  "source": "DuEE1.0", 
+  "instruction": "{\"instruction\": \"你是专门进行事件提取的专家。请从input中抽取出符合schema定义的事件，不存在的事件返回空列表，不存在的论元返回NAN，如果论元存在多值请返回列表。请按照JSON字符串的格式回答。\", \"schema\": [{\"event_type\": \"人生-求婚\", \"trigger\": true, \"arguments\": [\"求婚对象\"]}, {\"event_type\": \"人生-订婚\", \"trigger\": true, \"arguments\": [\"订婚主体\", \"时间\"]}, {\"event_type\": \"灾害/意外-坍/垮塌\", \"trigger\": true, \"arguments\": [\"受伤人数\", \"坍塌主体\"]}, {\"event_type\": \"人生-失联\", \"trigger\": true, \"arguments\": [\"地点\", \"失联者\"]}], \"input\": \"郭碧婷订婚后，填资料依旧想要填单身，有谁注意向佐说了什么？\"}", 
+  "output": "{\"人生-求婚\": [], \"人生-订婚\": [{\"trigger\": \"订婚\", \"arguments\": {\"订婚主体\": [\"向佐\", \"郭碧婷\"], \"时间\": \"NAN\"}}], \"灾害/意外-坍/垮塌\": [], \"人生-失联\": []}"
 }
 ```
 
@@ -396,7 +396,7 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --finetuning_type lora \
     --output_dir 'lora/test' \
     --predict_with_generate \
-    --max_source_length 512 \
+    --cutoff_len 512 \
     --bf16 \
     --max_new_tokens 300
 ```
@@ -406,7 +406,7 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 * `checkpoint_dir`: LoRA的权重文件路径。
 * `output_dir`: 此参数在推理时不起作用，可以随意指定一个路径。
 * `input_file`, `output_file`: 分别指定输入的测试文件路径和预测结果的输出文件路径。
-* `max_source_length`, `max_new_tokens`: 设置最大的输入长度和生成的新token数量，根据显存大小进行调整。
+* `cutoff_len`, `max_new_tokens`: 设置最大的输入长度和生成的新token数量，根据显存大小进行调整。
 
 > 可通过设置 `bits` = 4 进行量化, RTX3090建议量化。
 
@@ -425,7 +425,7 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --output_file 'results/KnowLM-IE-v2_output.json' \
     --output_dir 'lora/test' \
     --predict_with_generate \
-    --max_source_length 512 \
+    --cutoff_len 512 \
     --bf16 \
     --max_new_tokens 300 
 ```

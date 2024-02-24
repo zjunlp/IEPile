@@ -85,12 +85,6 @@ def preprocess_dataset(
             model_inputs["input_ids"].append(input_ids)
             model_inputs["attention_mask"].append([1] * len(input_ids))
             model_inputs["labels"].append(labels)
-
-        if stage == "sft-custom":
-            group_ids = []
-            for task, source in zip(examples["task"], examples["source"]):
-                group_ids.append([group2id_dict.get(f'{task}_{source}', 'None'), ])
-            model_inputs["group_id"] = group_ids
         
         return model_inputs
 

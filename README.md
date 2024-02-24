@@ -55,9 +55,9 @@ Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowl
 ![statistic](./assets/statistic.jpg)
 
 
-We have meticulously collected and cleaned existing Information Extraction (IE) datasets, integrating a total of 26 English IE datasets and 7 Chinese IE datasets. As shown in Figure 1, these datasets cover multiple domains including **general**, **medical**, **financial**, and others.
+We have meticulously collected and cleaned existing Information Extraction (IE) datasets, integrating a total of 26 **English** IE datasets and 7 **Chinese** IE datasets. As shown in Figure 1, these datasets cover multiple domains including **general**, **medical**, **financial**, and others.
 
-In this study, we adopted the proposed "`schema-based batched instruction generation method`" to successfully create a large-scale, high-quality IE fine-tuning dataset named **IEPile**, containing approximately `0.32B` tokens.
+In this study, we adopted the proposed "`schema-based batched instruction generation method`" to successfully create a large-scale, high-quality, **bilingual** (Chinese and English) IE instruction tuning dataset named **IEPile**, containing approximately `0.32B` tokens.
 
 Based on **IEPile**, we fine-tuned the `Baichuan2-13B-Chat` and `LLaMA2-13B-Chat` models using the `Lora` technique. Experiments have demonstrated that the fine-tuned `Baichuan2-IEPile` and `LLaMA2-IEPile` models perform remarkably on fully supervised training sets and have achieved improvements in **zero-shot information extraction tasks**.
 
@@ -405,7 +405,7 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --finetuning_type lora \
     --output_dir 'lora/test' \
     --predict_with_generate \
-    --max_source_length 512 \
+    --cutoff_len 512 \
     --bf16 \
     --max_new_tokens 300
 ```
@@ -415,7 +415,7 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 * `checkpoint_dir`: The path to the LoRA weight files.
 * `output_dir`: This parameter does not take effect during inference and any path can be specified.
 * `input_file`, `output_file`: Specify the input path for the test file and the output path for the prediction results, respectively.
-* `max_source_length`, `max_new_tokens`: Set the maximum input length and the number of new tokens to be generated, adjusting according to device performance.
+* `cutoff_len`, `max_new_tokens`: Set the maximum input length and the number of new tokens to be generated, adjusting according to device performance.
 
 > Quantization can be performed by setting bits to 4; it is recommended for the RTX3090.
 
@@ -436,7 +436,7 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --output_file 'results/KnowLM-IE-v2_output.json' \
     --output_dir 'lora/test' \
     --predict_with_generate \
-    --max_source_length 512 \
+    --cutoff_len 512 \
     --bf16 \
     --max_new_tokens 300
 ```

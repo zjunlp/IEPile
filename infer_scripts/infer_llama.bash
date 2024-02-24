@@ -10,6 +10,6 @@ CUDA_VISIBLE_DEVICES=2 python src/inference.py \
     --finetuning_type lora \
     --output_dir 'lora/test' \
     --predict_with_generate \
-    --max_source_length 512 \
+    --cutoff_len 512 \
     --bf16 \
     --max_new_tokens 300 
