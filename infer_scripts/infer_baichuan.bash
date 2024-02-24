@@ -12,5 +12,4 @@ CUDA_VISIBLE_DEVICES=2 python src/inference.py \
     --predict_with_generate \
     --cutoff_len 512 \
     --bf16 \
-    --max_new_tokens 300 \
-    --bits 4
+    --max_new_tokens 300 

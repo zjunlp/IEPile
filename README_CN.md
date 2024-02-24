@@ -18,6 +18,7 @@
 
 
 - [IEPile：大规模信息抽取语料库](#iepile大规模信息抽取语料库)
+  - [新闻](#新闻)
   - [1.介绍](#1介绍)
   - [2.数据](#2数据)
     - [2.1IEPile的构造](#21iepile的构造)
@@ -38,6 +39,14 @@
   - [8.局限](#8局限)
   - [9.引用](#9引用)
   - [10.致谢](#10致谢)
+
+
+## 新闻
+* [2024/02] 我们发布了一个大规模(`0.32B` tokens)高质量**双语**(中文和英文)信息抽取(IE)指令微调数据集，名为 [IEPile](https://huggingface.co/datasets/zjunlp/iepie), 以及基于 `IEPile` 训练的两个模型[baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora)、[llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora)。
+* [2023/10] 我们发布了一个新的**双语**(中文和英文)基于主题的信息抽取(IE)指令数据集，名为[InstructIE](https://huggingface.co/datasets/zjunlp/InstructIE)。
+* [2023/08] 我们推出了专用于信息抽取(IE)的13B模型，名为[knowlm-13b-ie](https://huggingface.co/zjunlp/knowlm-13b-ie/tree/main)。
+* [2023/05] 我们启动了基于指令的信息抽取项目。
+
 
 
 ## 1.介绍
@@ -465,7 +474,27 @@ python ie2instruction/eval_func.py \
 
 ## 9.引用
 如果您使用IEPile或代码，请引用以下论文：
-
+```
+@article{DBLP:journals/corr/abs-2402-14710,
+  author       = {Honghao Gui and
+                  Hongbin Ye and
+                  Lin Yuan and
+                  Ningyu Zhang and
+                  Mengshu Sun and
+                  Lei Liang and
+                  Huajun Chen},
+  title        = {IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus},
+  journal      = {CoRR},
+  volume       = {abs/2402.14710},
+  year         = {2024},
+  url          = {https://doi.org/10.48550/arXiv.2402.14710},
+  doi          = {10.48550/ARXIV.2402.14710},
+  eprinttype   = {arXiv},
+  eprint       = {2402.14710},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-2402-14710.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+```
 
 
 ## 10.致谢
