@@ -64,7 +64,7 @@ Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowl
 ![statistic](./assets/statistic.jpg)
 
 
-We have meticulously collected and cleaned existing Information Extraction (IE) datasets, integrating a total of 26 **English** IE datasets and 7 **Chinese** IE datasets. As shown in Figure 1, these datasets cover multiple domains including **general**, **medical**, **financial**, and others.
+We have collected and cleaned existing Information Extraction (IE) datasets, integrating a total of 26 **English** IE datasets and 7 **Chinese** IE datasets. As shown in the Figure, these datasets cover multiple domains including **general**, **medical**, **financial**, and others.
 
 In this study, we adopted the proposed "`schema-based batched instruction generation method`" to successfully create a large-scale, high-quality, **bilingual** (Chinese and English) IE instruction tuning dataset named **IEPile**, containing approximately `0.32B` tokens.
 
