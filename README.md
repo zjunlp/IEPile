@@ -66,7 +66,7 @@ Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowl
 
 We have collected and cleaned existing Information Extraction (IE) datasets, integrating a total of 26 **English** IE datasets and 7 **Chinese** IE datasets. As shown in the Figure, these datasets cover multiple domains including **general**, **medical**, **financial**, and others.
 
-In this study, we adopted the proposed "`schema-based batched instruction generation method`" to successfully create a large-scale, high-quality, **bilingual** (Chinese and English) IE instruction tuning dataset named **IEPile**, containing approximately `0.32B` tokens.
+In this study, we adopted the proposed "`schema-based batched instruction generation strategy`" to create a large-scale, high-quality, **bilingual** (Chinese and English) IE instruction tuning dataset named **IEPile**, containing approximately `0.32B` tokens.
 
 Based on **IEPile**, we fine-tuned the `Baichuan2-13B-Chat` and `LLaMA2-13B-Chat` models using the `Lora` technique. Experiments have demonstrated that the fine-tuned `Baichuan2-IEPile` and `LLaMA2-IEPile` models perform remarkably on fully supervised training sets and have achieved improvements in **zero-shot information extraction tasks**.
 
