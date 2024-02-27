@@ -16,7 +16,7 @@ class EEConverter(Converter):
             if event_trigger == "":
                 event_trigger = self.NAN
 
-            args = defaultdict(set)  # 论元可能多值, 但是也有唯一性
+            args = defaultdict(set)  
             for arg in event['arguments']:
                 argument = arg['argument']
                 role = arg['role']
@@ -26,7 +26,7 @@ class EEConverter(Converter):
             new_args = {}
             for role, arg in args.items():
                 if len(arg) == 1:
-                    new_args[role] = list(arg)[0]   # 只有一个值是一个字符串
+                    new_args[role] = list(arg)[0]  
                 else:
                     new_args[role] = list(arg)  
 
@@ -52,7 +52,7 @@ class EEConverter(Converter):
                             tmp_args[role] = self.NAN
                         else:
                             flag = True
-                            if isinstance(label_arg["arguments"][role], list):  # 多值论元, 按照在句子中的顺序排序
+                            if isinstance(label_arg["arguments"][role], list):  
                                 value_index = []
                                 for value in label_arg["arguments"][role]:
                                     value_index.append([text.find(value), value])
@@ -61,18 +61,17 @@ class EEConverter(Converter):
                                 for iit in value_index:
                                     sorted_value.append(iit[1])
                                 tmp_args[role] = sorted_value
-                            tmp_args[role] = label_arg["arguments"][role]   # 只有一个值是一个字符串
-                    if not flag:   #没有一个论元直接输出{}, 而非全部的NAN
+                            tmp_args[role] = label_arg["arguments"][role]  
+                    if not flag:  
                         tmp_args = {}
                     else:
                         tmp_args = dict(tmp_args)
 
-                    if trigger:   # 需要添加触发词
+                    if trigger:  
                         args.append({"trigger":label_arg["event_trigger"], "arguments":tmp_args})
                     else:
-                        if len(tmp_args) != 0:   # 不需要添加触发词, 但是有论元
+                        if len(tmp_args) != 0:   
                             args.append({"arguments":tmp_args})
-                        # else: 不需要添加触发词, 也没有论元, 整个就是个空
                 outputs[it['event_type']] = args
 
         if trigger:
