@@ -52,7 +52,7 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
 ## 1.Introduction
 
 
-**`IEPile`** dataset download links: [Google Drive](https://drive.google.com/file/d/1jPdvXOTTxlAmHkn5XkeaaCFXQkYJk5Ng/view?usp=sharing) | [Hugging Face](https://huggingface.co/datasets/zjunlp/iepile)
+**`IEPile`** dataset download links: [Google Drive](https://drive.google.com/file/d/1jPdvXOTTxlAmHkn5XkeaaCFXQkYJk5Ng/view?usp=sharing) | [Hugging Face](https://huggingface.co/datasets/zjunlp/iepile) | [WiseModel](https://wisemodel.cn/datasets/zjunlp/IEPile) | [ModelScpoe](https://modelscope.cn/datasets/ZJUNLP/IEPile)
 
 
 > Please be aware that the data contained in the dataset links provided above has already excluded any part related to the ACE2005 dataset. Should you require access to the unfiltered, complete dataset and have successfully obtained the necessary permissions, please do not hesitate to contact us via email at guihonghao@zju.edu.cn or zhangningyu@zju.edu.cn. We will provide the complete dataset resources for your use.
@@ -322,7 +322,10 @@ The converted training data will contain four fields: `task`, `source`, `instruc
 
 Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(based on Baichuan2)`**: [zjunlp/llama2-13b-IEPile-lora](https://huggingface.co/zjunlp/llama2-13b-IEPile-lora/tree/main) | [zjunlp/baichuan2-13b-IEPile-lora](https://huggingface.co/zjunlp/baichuan2-13b-IEPile-lora) | [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
 
-
+| checkpoint_dir | model_name_or_path | moadel_name | fp16/bf16 | template | 
+| --- | --- | --- | --- | --- |
+| llama2-13b-iepile-lora | LLaMA2-13B-Chat | llama | bf16 | llama2 |
+| baichuan2-13b-iepile-lora | BaiChuan2-13B-Chat | baichuan | bf16 | baichuan2 |
 
 ```bash
 output_dir='lora/llama2-13b-chat-v1-continue'
@@ -370,6 +373,7 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
 
 
 The script can be found at [ft_scripts/fine_continue.bash](./ft_scripts/fine_continue.bash).
+
 
 
 ## 5.Prediction
@@ -490,7 +494,7 @@ From the model perspective, due to computational resource limitations, our resea
 ## 9.Cite
 If you use the IEPile or the code, please cite the paper:
 
-```
+```bibtex
 @article{DBLP:journals/corr/abs-2402-14710,
   author       = {Honghao Gui and
                   Hongbin Ye and
