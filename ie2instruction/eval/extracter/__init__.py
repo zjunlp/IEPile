@@ -1,4 +1,5 @@
 from .ee_extracter import EEExtracter
+from .eea_extracter import EEAExtracter
 from .eet_extracter import EETExtracter
 from .re_extracter import REExtracter
 from .ner_extracter import NERExtracter
@@ -11,8 +12,10 @@ def get_extracter(task):
         return NERExtracter
     elif task == RE:
         return REExtracter
-    elif task == EE or task == EEA:
+    elif task == EE:
         return EEExtracter
+    elif task == EEA:
+        return EEAExtracter
     elif task == EET:
         return EETExtracter
     elif task == KG:
