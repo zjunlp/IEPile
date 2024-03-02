@@ -253,6 +253,9 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
     --deepspeed configs/ds_config_bf16.json
 ```
 
+* `CUDA_VISIBLE_DEVICES="0,1,2,3"`: 指定哪些GPU可用于当前的训练任务。这里的"0,1,2,3"意味着使用编号为0、1、2、3的四个GPU。如果你的机器上有多于四个GPU，这个设置可以让你选择使用哪四个。
+* `--nproc_per_node=4`: 指定每个节点上要启动的进程数。在这个例子中，因为指定了4个GPU，所以也需要启动4个进程，每个进程对应一个GPU。
+* 对于只使用**单个GPU**进行训练的情况，可以通过`CUDA_VISIBLE_DEVICES=0 python src/finetune.py`命令来启动训练任务，其中`CUDA_VISIBLE_DEVICES=0`指定了编号为0的GPU用于此次训练。
 * `model_name`: 指定所需的**模型架构名称**(7B、13B、Base、Chat属于同一模型架构)。当前支持的模型包括：["`llama`", "`alpaca`", "`vicuna`", "`zhixi`", "`falcon`", "`baichuan`", "`chatglm`", "`qwen`", "`moss`", "`openba`"]。**请注意**，此参数应与 `--model_name_or_path` 区分。
 * `model_name_or_path`: 模型路径, 请到 [HuggingFace](https://huggingface.co/models) 下载相应模型。
 * `template`: 使用的**模板名称**，包括：`alpaca`, `baichuan`, `baichuan2`, `chatglm3`等, 请参考 [src/datamodule/template.py](./src/datamodule/template.py) 查看所有支持的模版名称, 默认使用的是`alpaca`模板, **`Chat`版本的模型建议使用配套的模版, Base版本模型可默认使用`alpaca`**。
@@ -391,11 +394,12 @@ python ie2instruction/convert_func.py \
 
 **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora)
 
-
 | checkpoint_dir | model_name_or_path | moadel_name | fp16/bf16 | template | 
 | --- | --- | --- | --- | --- |
 | llama2-13b-iepile-lora | LLaMA2-13B-Chat | llama | bf16 | llama2 |
 | baichuan2-13b-iepile-lora | BaiChuan2-13B-Chat | baichuan | bf16 | baichuan2 |
+
+⚠️ 注意使用**基础模型+Lora预测**时不仅需要下载Lora权重参数, 还要下载基础模型参数。例如: 使用`baichuan2-13b-iepile-lora`(--checkpoint_dir), 还需要下载`BaiChuan2-13B-Chat`(--model_name_or_path), 🚫**不能**只设置 `--model_name_or_path lora/baichuan2-13b-iepile-lora`。
 
 
 ```bash

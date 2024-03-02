@@ -256,7 +256,9 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
     --lora_dropout 0.05 \
     --bf16 
 ```
-
+* `CUDA_VISIBLE_DEVICES="0,1,2,3"`: used to specify which GPUs are available for the current training task. In this case, "0,1,2,3" means that the four GPUs with IDs 0, 1, 2, and 3 are being utilized. If your machine is equipped with more than four GPUs, this setting allows you to select any four of them for use.
+* `--nproc_per_node=4`: specifies the number of processes to be launched on each node. Since four GPUs have been specified in this example, it is necessary to start four separate processes, with each process corresponding to one GPU.
+* For training tasks that use only **a single GPU**, the command `CUDA_VISIBLE_DEVICES=0 python src/finetune.py` can be used to initiate the training. Here, CUDA_VISIBLE_DEVICES=0 designates GPU number 0 for this training task.
 * `model_name`: Specifies the **name of the model architecture** you want to use (7B, 13B, Base, Chat belong to the same model architecture). Currently supported models include: ["`llama`", "`alpaca`", "`vicuna`", "`zhixi`", "`falcon`", "`baichuan`", "`chatglm`", "`qwen`", "`moss`", "`openba`"]. **Please note**, this parameter should be distinguished from `--model_name_or_path`.
 * `model_name_or_path`: Model path, please download the corresponding model from [HuggingFace](https://huggingface.co/models).
 * `template`: The **name of the template** used, including: `alpaca`, `baichuan`, `baichuan2`, `chatglm3`, etc. Refer to [src/datamodule/template.py](./src/datamodule/template.py) to see all supported template names. The default is the `alpaca` template. **For `Chat` versions of models, it is recommended to use the matching template, while `Base` version models can default to using `alpaca`**.
@@ -403,6 +405,9 @@ The `label` field will be used for subsequent evaluation. If the input data lack
 ### 5.2Basic Model + LoRA Prediction
 
 Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** : [zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) 
+
+
+⚠️ When performing the **Basic Model + LoRA Prediction**, it's necessary not only to download the Lora weight parameters but also the base model parameters. For example, when using `baichuan2-13b-iepile-lora` (specified with `--checkpoint_dir`), you must also download `BaiChuan2-13B-Chat` (specified with `--model_name_or_path`). 🚫**You cannot** merely set `--model_name_or_path lora/baichuan2-13b-iepile-lora`.
 
 
 ```bash
