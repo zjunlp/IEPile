@@ -26,7 +26,7 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
   - [3.Using IEPile to Train Models](#3using-iepile-to-train-models)
     - [3.1Environment](#31environment)
     - [3.2Download Data and Models](#32download-data-and-models)
-    - [3.4LoRA Fine-tuning](#34lora-fine-tuning)
+    - [3.3LoRA Fine-tuning](#33lora-fine-tuning)
   - [4.Continued Training with In-Domain Data](#4continued-training-with-in-domain-data)
     - [4.1Training Data Conversion](#41training-data-conversion)
     - [4.2Continued Training](#42continued-training)
@@ -218,7 +218,7 @@ Data should be placed in the `./data` directory.
 
 
 
-### 3.4LoRA Fine-tuning
+### 3.3LoRA Fine-tuning
 
 > Important Note: All the commands below should be executed within the `IEPile` directory. For example, if you want to run the fine-tuning script, you should use the following command: `bash ft_scripts/fine_llama.bash`. Please ensure your current working directory is correct.
 
@@ -262,12 +262,13 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
 * `model_name`: Specifies the **name of the model architecture** you want to use (7B, 13B, Base, Chat belong to the same model architecture). Currently supported models include: ["`llama`", "`alpaca`", "`vicuna`", "`zhixi`", "`falcon`", "`baichuan`", "`chatglm`", "`qwen`", "`moss`", "`openba`"]. **Please note**, this parameter should be distinguished from `--model_name_or_path`.
 * `model_name_or_path`: Model path, please download the corresponding model from [HuggingFace](https://huggingface.co/models).
 * `template`: The **name of the template** used, including: `alpaca`, `baichuan`, `baichuan2`, `chatglm3`, etc. Refer to [src/datamodule/template.py](./src/datamodule/template.py) to see all supported template names. The default is the `alpaca` template. **For `Chat` versions of models, it is recommended to use the matching template, while `Base` version models can default to using `alpaca`**.
-* `train_file`, `valid_file (optional)`: The **file paths** for the training set and validation set. Note: Currently, the format for files only supports **JSON format**.
+* `train_file`, `valid_file (optional)`: The **file paths** for the training set and the validation set, respectively. Note: Only **JSON format** files are currently supported. ⚠️If `valid_file` is not specified, a subset of `val_set_size` entries will be automatically allocated from `train_file` to serve as the validation set.
 * `output_dir`: The **path to save the weight parameters** after LoRA fine-tuning.
 * `val_set_size`: The number of samples in the **validation set**, default is 1000.
 * `per_device_train_batch_size`, `per_device_eval_batch_size`: The `batch_size` on each GPU device, adjust according to the size of the memory. For RTX3090, it is recommended to set between 2 and 4.
 * `max_source_length`, `max_target_length`, `cutoff_len`: The maximum input and output lengths, and the cutoff length, which can simply be considered as the maximum input length + maximum output length. Set appropriate values according to specific needs and memory size.
-* `deepspeed`: Remove if there is not enough device resources.
+* `deepspeed`: If there is not enough GPU memory, you can remove this parameter.
+* If running out of GPU memory occurs when saving the model after the evaluation phase, please set `evaluation_strategy` to `no`.
 
 > Quantization can be performed by setting bits to 4; it is recommended for the RTX3090.
 
@@ -277,8 +278,6 @@ The specific script for fine-tuning the `LLaMA2-13B-Chat` model can be found in 
 
 
 The specific script for fine-tuning the `Baichuan2-13B-Chat` model can be found in [ft_scripts/fine_baichuan.bash](./ft_scripts/fine_baichuan.bash).bash.
-
-
 
 
 
@@ -363,6 +362,7 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
     --bf16 
 ```
 
+* Please refer to the [3.3LoRA Fine-tuning](./README.md#33lora-fine-tuning) for further parameter description.
 * To continue training based on the fine-tuned LoRA weights, simply point the `--checkpoint_dir` parameter to the path of the LoRA weights, for example by setting it to `'zjunlp/llama2-13b-iepile-lora'`.
 
 > Quantization can be performed by setting bits to 4; it is recommended for the RTX3090.
