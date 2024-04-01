@@ -7,7 +7,7 @@
 这是论文 [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](https://arxiv.org/abs/2402.14710) 的官方仓库。
 
 
-[**数据集**](https://huggingface.co/datasets/zjunlp/iepie) |
+[**数据集**](https://huggingface.co/datasets/zjunlp/iepile) |
 [**论文**](https://huggingface.co/papers/2402.14710) |
 [**使用方法**](./README_CN.md#3使用iepile训练模型) |
 [**局限性**](./README_CN.md#8局限) |
@@ -42,7 +42,7 @@
 
 
 ## 新闻
-* [2024/02] 我们发布了一个大规模(`0.32B` tokens)高质量**双语**(中文和英文)信息抽取(IE)指令微调数据集，名为 [IEPile](https://huggingface.co/datasets/zjunlp/iepie), 以及基于 `IEPile` 训练的两个模型[baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora)、[llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora)。
+* [2024/02] 我们发布了一个大规模(`0.32B` tokens)高质量**双语**(中文和英文)信息抽取(IE)指令微调数据集，名为 [IEPile](https://huggingface.co/datasets/zjunlp/iepile), 以及基于 `IEPile` 训练的两个模型[baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora)、[llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora)。
 * [2023/10] 我们发布了一个新的**双语**(中文和英文)基于主题的信息抽取(IE)指令数据集，名为[InstructIE](https://huggingface.co/datasets/zjunlp/InstructIE)和[论文](https://arxiv.org/abs/2305.11527)。
 * [2023/08] 我们推出了专用于信息抽取(IE)的13B模型，名为[knowlm-13b-ie](https://huggingface.co/zjunlp/knowlm-13b-ie/tree/main)。
 * [2023/05] 我们启动了基于指令的信息抽取项目。
@@ -230,8 +230,8 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
     --stage 'sft' \
     --model_name 'llama' \
     --template 'llama2' \
-    --train_file 'data/train.json' \
-    --valid_file 'data/dev.json' \
+    --train_file 'data/NER/train.json' \
+    --valid_file 'data/NER/dev.json' \
     --output_dir=${output_dir} \
     --per_device_train_batch_size 2 \
     --per_device_eval_batch_size 2 \
@@ -254,15 +254,19 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
     --deepspeed configs/ds_config_bf16.json
 ```
 
+* `CUDA_VISIBLE_DEVICES="0,1,2,3"`: 指定哪些GPU可用于当前的训练任务。这里的"0,1,2,3"意味着使用编号为0、1、2、3的四个GPU。如果你的机器上有多于四个GPU，这个设置可以让你选择使用哪四个。
+* `--nproc_per_node=4`: 指定每个节点上要启动的进程数。在这个例子中，因为指定了4个GPU，所以也需要启动4个进程，每个进程对应一个GPU。
+* 对于只使用**单个GPU**进行训练的情况，可以通过`CUDA_VISIBLE_DEVICES=0 python src/finetune.py`命令来启动训练任务，其中`CUDA_VISIBLE_DEVICES=0`指定了编号为0的GPU用于此次训练。
 * `model_name`: 指定所需的**模型架构名称**(7B、13B、Base、Chat属于同一模型架构)。当前支持的模型包括：["`llama`", "`alpaca`", "`vicuna`", "`zhixi`", "`falcon`", "`baichuan`", "`chatglm`", "`qwen`", "`moss`", "`openba`"]。**请注意**，此参数应与 `--model_name_or_path` 区分。
 * `model_name_or_path`: 模型路径, 请到 [HuggingFace](https://huggingface.co/models) 下载相应模型。
 * `template`: 使用的**模板名称**，包括：`alpaca`, `baichuan`, `baichuan2`, `chatglm3`等, 请参考 [src/datamodule/template.py](./src/datamodule/template.py) 查看所有支持的模版名称, 默认使用的是`alpaca`模板, **`Chat`版本的模型建议使用配套的模版, Base版本模型可默认使用`alpaca`**。
-* `train_file`, `valid_file（可选）`: 训练集和验证集的**文件路径**。注意：目前仅支持json格式的文件。
+* `train_file`, `valid_file(可选)`: 训练集和验证集的**文件路径**, 注意：目前仅支持**json格式**的文件, ⚠️若不指定`valid_file`, 将自动从`train_file`中划分`val_set_size`个数据作为验证集。
 * `output_dir`: LoRA微调后的**权重参数保存路径**。
 * `val_set_size`: **验证集的样本数量**, 默认为1000。
 * `per_device_train_batch_size`, `per_device_eval_batch_size`: 每台GPU设备上的`batch_size`, 根据显存大小调整, RTX3090建议设置2~4。
 * `max_source_length`, `max_target_length`, `cutoff_len`: 最大输入、输出长度、截断长度, 截断长度可以简单地视作最大输入长度 + 最大输出长度, 需根据具体需求和显存大小设置合适值。
-* `deepspeed`: 设备资源不够可去掉。
+* `deepspeed`: GPU显存不够可以去掉这个参数。
+* 如果出现在eval阶段后保存模型时爆显存的情况, 请设置 `evaluation_strategy no`
 
 > 可通过设置 `bits` = 4 进行量化, RTX3090建议量化。
 
@@ -334,7 +338,6 @@ python ie2instruction/convert_func.py \
 **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(基于Baichuan2)`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
 
 
-
 ```bash
 output_dir='lora/llama2-13b-chat-v1-continue'
 mkdir -p ${output_dir}
@@ -369,6 +372,8 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
     --bf16 
 ```
 
+
+* 参数说明请参考[3.3LoRA微调](./README_CN.md#33lora微调)
 * 若要基于微调后的LoRA权重继续训练，仅需将 `checkpoint_dir` 参数指向LoRA权重路径，例如设置为`'zjunlp/llama2-13b-iepile-lora'`。
 
 > 可通过设置 `bits` = 4 进行量化, RTX3090建议量化。
@@ -410,11 +415,12 @@ python ie2instruction/convert_func.py \
 
 **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora)
 
-
 | checkpoint_dir | model_name_or_path | moadel_name | fp16/bf16 | template | 
 | --- | --- | --- | --- | --- |
 | llama2-13b-iepile-lora | LLaMA2-13B-Chat | llama | bf16 | llama2 |
 | baichuan2-13b-iepile-lora | BaiChuan2-13B-Chat | baichuan | bf16 | baichuan2 |
+
+⚠️ 注意使用**基础模型+Lora预测**时不仅需要下载Lora权重参数, 还要下载基础模型参数。例如: 使用`baichuan2-13b-iepile-lora`(--checkpoint_dir), 还需要下载`BaiChuan2-13B-Chat`(--model_name_or_path), 🚫**不能**只设置 `--model_name_or_path lora/baichuan2-13b-iepile-lora`。
 
 
 ```bash
@@ -441,6 +447,7 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 * `output_dir`: 此参数在推理时不起作用，可以随意指定一个路径。
 * `input_file`, `output_file`: 分别指定输入的测试文件路径和预测结果的输出文件路径。
 * `cutoff_len`, `max_new_tokens`: 设置最大的输入长度和生成的新token数量，根据显存大小进行调整。
+
 
 > 可通过设置 `bits` = 4 进行量化, RTX3090建议量化。
 

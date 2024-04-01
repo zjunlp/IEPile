@@ -7,7 +7,7 @@
 
 This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](https://arxiv.org/abs/2402.14710)
 
-[**Datasets**](https://huggingface.co/datasets/zjunlp/iepie) | 
+[**Datasets**](https://huggingface.co/datasets/zjunlp/iepile) | 
 [**Paper**](https://huggingface.co/papers/2402.14710) | 
 [**Usage**](./README.md#3using-iepile-to-train-models) |
 [**Limitations**](./README.md#8limitations) |
@@ -26,7 +26,7 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
   - [3.Using IEPile to Train Models](#3using-iepile-to-train-models)
     - [3.1Environment](#31environment)
     - [3.2Download Data and Models](#32download-data-and-models)
-    - [3.4LoRA Fine-tuning](#34lora-fine-tuning)
+    - [3.3LoRA Fine-tuning](#33lora-fine-tuning)
   - [4.Continued Training with In-Domain Data](#4continued-training-with-in-domain-data)
     - [4.1Training Data Conversion](#41training-data-conversion)
     - [4.2Continued Training](#42continued-training)
@@ -42,7 +42,7 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
 
 
 ## News
-* [2024/02] We released a large-scale (0.32B tokens) high-quality bilingual (Chinese and English) Information Extraction (IE) instruction dataset named [IEPile](https://huggingface.co/datasets/zjunlp/iepie), along with two models trained on `IEPile`, [baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) and [llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora).
+* [2024/02] We released a large-scale (0.32B tokens) high-quality bilingual (Chinese and English) Information Extraction (IE) instruction dataset named [IEPile](https://huggingface.co/datasets/zjunlp/iepile), along with two models trained on `IEPile`, [baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) and [llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora).
 * [2023/10] We released a new bilingual (Chinese and English) theme-based Information Extraction (IE) instruction dataset named [InstructIE](https://huggingface.co/datasets/zjunlp/InstructIE) with [paper](https://arxiv.org/abs/2305.11527).
 * [2023/08] We introduced a dedicated 13B model for Information Extraction (IE), named [knowlm-13b-ie](https://huggingface.co/zjunlp/knowlm-13b-ie/tree/main).
 * [2023/05] We initiated an instruction-based Information Extraction project.
@@ -223,7 +223,7 @@ Data should be placed in the `./data` directory.
 
 
 
-### 3.4LoRA Fine-tuning
+### 3.3LoRA Fine-tuning
 
 > Important Note: All the commands below should be executed within the `IEPile` directory. For example, if you want to run the fine-tuning script, you should use the following command: `bash ft_scripts/fine_llama.bash`. Please ensure your current working directory is correct.
 > Please make sure that each entry in the training/validation files includes the `instruction`, `output` fields.
@@ -262,16 +262,19 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
     --lora_dropout 0.05 \
     --bf16 
 ```
-
+* `CUDA_VISIBLE_DEVICES="0,1,2,3"`: used to specify which GPUs are available for the current training task. In this case, "0,1,2,3" means that the four GPUs with IDs 0, 1, 2, and 3 are being utilized. If your machine is equipped with more than four GPUs, this setting allows you to select any four of them for use.
+* `--nproc_per_node=4`: specifies the number of processes to be launched on each node. Since four GPUs have been specified in this example, it is necessary to start four separate processes, with each process corresponding to one GPU.
+* For training tasks that use only **a single GPU**, the command `CUDA_VISIBLE_DEVICES=0 python src/finetune.py` can be used to initiate the training. Here, CUDA_VISIBLE_DEVICES=0 designates GPU number 0 for this training task.
 * `model_name`: Specifies the **name of the model architecture** you want to use (7B, 13B, Base, Chat belong to the same model architecture). Currently supported models include: ["`llama`", "`alpaca`", "`vicuna`", "`zhixi`", "`falcon`", "`baichuan`", "`chatglm`", "`qwen`", "`moss`", "`openba`"]. **Please note**, this parameter should be distinguished from `--model_name_or_path`.
 * `model_name_or_path`: Model path, please download the corresponding model from [HuggingFace](https://huggingface.co/models).
 * `template`: The **name of the template** used, including: `alpaca`, `baichuan`, `baichuan2`, `chatglm3`, etc. Refer to [src/datamodule/template.py](./src/datamodule/template.py) to see all supported template names. The default is the `alpaca` template. **For `Chat` versions of models, it is recommended to use the matching template, while `Base` version models can default to using `alpaca`**.
-* `train_file`, `valid_file (optional)`: The **file paths** for the training set and validation set. Note: Currently, the format for files only supports **JSON format**.
+* `train_file`, `valid_file (optional)`: The **file paths** for the training set and the validation set, respectively. Note: Only **JSON format** files are currently supported. ⚠️If `valid_file` is not specified, a subset of `val_set_size` entries will be automatically allocated from `train_file` to serve as the validation set.
 * `output_dir`: The **path to save the weight parameters** after LoRA fine-tuning.
 * `val_set_size`: The number of samples in the **validation set**, default is 1000.
 * `per_device_train_batch_size`, `per_device_eval_batch_size`: The `batch_size` on each GPU device, adjust according to the size of the memory. For RTX3090, it is recommended to set between 2 and 4.
 * `max_source_length`, `max_target_length`, `cutoff_len`: The maximum input and output lengths, and the cutoff length, which can simply be considered as the maximum input length + maximum output length. Set appropriate values according to specific needs and memory size.
-* `deepspeed`: Remove if there is not enough device resources.
+* `deepspeed`: If there is not enough GPU memory, you can remove this parameter.
+* If running out of GPU memory occurs when saving the model after the evaluation phase, please set `evaluation_strategy` to `no`.
 
 > Quantization can be performed by setting bits to 4; it is recommended for the RTX3090.
 
@@ -281,8 +284,6 @@ The specific script for fine-tuning the `LLaMA2-13B-Chat` model can be found in 
 
 
 The specific script for fine-tuning the `Baichuan2-13B-Chat` model can be found in [ft_scripts/fine_baichuan.bash](./ft_scripts/fine_baichuan.bash).bash.
-
-
 
 
 
@@ -388,6 +389,7 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
     --bf16 
 ```
 
+* Please refer to the [3.3LoRA Fine-tuning](./README.md#33lora-fine-tuning) for further parameter description.
 * To continue training based on the fine-tuned LoRA weights, simply point the `--checkpoint_dir` parameter to the path of the LoRA weights, for example by setting it to `'zjunlp/llama2-13b-iepile-lora'`.
 
 > Quantization can be performed by setting bits to 4; it is recommended for the RTX3090.
@@ -430,6 +432,9 @@ The `label` field will be used for subsequent evaluation. If the input data lack
 ### 5.2Basic Model + LoRA Prediction
 
 Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** : [zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) 
+
+
+⚠️ When performing the **Basic Model + LoRA Prediction**, it's necessary not only to download the Lora weight parameters but also the base model parameters. For example, when using `baichuan2-13b-iepile-lora` (specified with `--checkpoint_dir`), you must also download `BaiChuan2-13B-Chat` (specified with `--model_name_or_path`). 🚫**You cannot** merely set `--model_name_or_path lora/baichuan2-13b-iepile-lora`.
 
 
 ```bash

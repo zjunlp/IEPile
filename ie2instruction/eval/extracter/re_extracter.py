@@ -26,8 +26,8 @@ class REExtracter(Extracter):
                 if type(iit) != dict:
                     print("type(iit) != dict", result)
                     continue
-                head = iit.get('head', '')
-                tail = iit.get('tail', '')
+                head = iit.get('subject', '')
+                tail = iit.get('object', '')
                 if type(head) != str or type(tail) != str:
                     print("type(head) != str or type(tail) != str", result)
                     continue

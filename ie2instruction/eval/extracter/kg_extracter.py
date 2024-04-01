@@ -9,5 +9,5 @@ class KGExtracter(Extracter):
     
 
     def post_process(self, result):   
-        raise NotImplementedError("This method should be implemented in the subclass.")
+        raise NotImplementedError("This method should be implemented by subclass.")
 

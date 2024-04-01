@@ -7,8 +7,8 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
     --stage 'sft' \
     --model_name 'llama' \
     --template 'llama2' \
-    --train_file 'data/train.json' \
-    --valid_file 'data/dev.json' \
+    --train_file 'data/NER/train.json' \
+    --val_set_size 100 \
     --output_dir=${output_dir} \
     --per_device_train_batch_size 2 \
     --per_device_eval_batch_size 2 \
