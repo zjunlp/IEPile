@@ -121,24 +121,7 @@
 
 ### 2.2IEPile的数据格式
 
-`IEPile` 中的每条数据均包含 `task`, `source`, `instruction`, `output` 4个字段, 以下是各字段的说明
-
-| 字段 | 说明 |
-| :---: | :---: |
-| task | 该实例所属的任务, (`NER`、`RE`、`EE`、`EET`、`EEA`) 5种任务之一。 |
-| source | 该实例所属的数据集 |
-| instruction | 输入模型的指令, 经过json.dumps处理成JSON字符串, 包括`"instruction"`, `"schema"`, `"input"`三个字段 |
-| output | 输出, 采用字典的json字符串的格式, key是schema, value是抽取出的内容 |
-
-
-在`IEPile`中, **`instruction`** 的格式采纳了类JSON字符串的结构，实质上是一种字典型字符串，它由以下三个主要部分构成：
-(1) **`'instruction'`**: 任务描述, 它概述了指令的执行任务(`NER`、`RE`、`EE`、`EET`、`EEA`之一)。
-(2) **`'schema'`**: 待抽取的schema(`实体类型`, `关系类型`, `事件类型`)列表。
-(3) **`'input'`**: 待抽取的文本。
-
-
-[instruction.py](./ie2instruction/convert/utils/instruction.py) 中提供了各个任务的指令模版。
-
+`IEPile` 中的每条数据均包含 `task`, `source`, `instruction`, `output` 4个字段
 
 以下是一条**数据实例**：
 
@@ -177,6 +160,23 @@
 
 </details>
 
+以下是各字段的说明: 
+
+| 字段 | 说明 |
+| :---: | :---: |
+| task | 该实例所属的任务, (`NER`、`RE`、`EE`、`EET`、`EEA`) 5种任务之一。 |
+| source | 该实例所属的数据集 |
+| instruction | 输入模型的指令, 经过json.dumps处理成JSON字符串, 由`"instruction"`, `"schema"`, `"input"`三部分组成 |
+| output | 输出, 采用字典的json字符串的格式, key是schema, value是抽取出的内容 |
+
+
+在`IEPile`中, **`instruction`** 的格式采纳了类JSON字符串的结构，实质上是一种字典型字符串，它由以下三个主要部分构成：
+(1) **`'instruction'`**: 任务描述, 它概述了指令的执行任务(`NER`、`RE`、`EE`、`EET`、`EEA`之一)。
+(2) **`'schema'`**: 待抽取的schema(`实体类型`, `关系类型`, `事件类型`)列表。
+(3) **`'input'`**: 待抽取的文本。
+
+
+[instruction.py](./ie2instruction/convert/utils/instruction.py) 中提供了各个任务的指令模版。
 
 
 
@@ -217,6 +217,7 @@ mkdir lora         # lora微调结果放这
 ### 3.3LoRA微调
 
 > 重要提示：以下的所有命令均应在`IEPile`目录下执行。例如，如果您想运行微调脚本，您应该使用如下命令：bash ft_scripts/fine_llama.bash。请确保您的当前工作目录正确。
+> 请确保训练/验证文件中每条数据包含 `instruction`, `output` 字段。
 
 
 ```bash
@@ -307,6 +308,24 @@ python ie2instruction/convert_func.py \
 * `split`: 指定数据集类型，可选`train`或`test`。
 
 转换后的训练数据将包含 `task`, `source`, `instruction`, `output` 四个字段。
+
+
+**`难负样本生成`**: 促进语义相近容易混淆schema共现, 减少训练样本量
+```bash
+python ie2instruction/convert_func.py \
+    --src_path data/SPO/sample.json \
+    --tgt_path data/SPO/train.json \
+    --schema_path data/SPO/schema.json \
+    --cluster_mode \
+    --hard_negative_path data/hard_negative/SPO_DuIE2.0.json \
+    --language zh \
+    --task SPO \
+    --split_num 4 \
+    --random_sort \
+    --split train
+```
+
+增加`--cluster_mode`, `--hard_negative_path data/hard_negative/SPO_DuIE2.0.json` 参数, `--hard_negative_path`对应难负样本字典, [hard_dict.json](./data/hard_negative/hard_dict.json) 中有IEPILE中涉及的所有数据集的难负样本字典。
 
 
 

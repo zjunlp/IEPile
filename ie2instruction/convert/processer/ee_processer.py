@@ -85,6 +85,7 @@ class EEProcesser(Processer):
                     neg_length = min(neg_length, len(negative_role))
                     negative_role = random.sample(negative_role, neg_length)
                 tmp_total_schemas.append((it, negative_role + list(positive_type_role[it])))
+            
             for it in negative_type:
                 negative_role = list(self.type_role_dict[it])
                 if self.negative > 0:
@@ -109,3 +110,59 @@ class EEProcesser(Processer):
         return self.split_total_by_num(split_num, sorted_tmp_total_schemas)
 
     
+    def negative_cluster_sample(self, record, split_num=4, random_sort=True):
+        task_record = self.get_task_record(record)
+        positive_type, _, positive_type_role = self.get_positive_type_role(task_record)
+        if len(self.type_role_dict) == 1:    
+            total_cluster = list(self.type_list)
+        elif len(positive_type) == 0:       
+            neg_length = sum(np.random.binomial(1, self.negative / 2, self.label_length))
+            neg_length = max(neg_length, 1)
+            total_cluster = random.sample(list(self.type_list), neg_length)
+        else:
+            total_cluster = set()
+            for key in positive_type:        
+                negative = self.hard_dict[key].copy()   
+                total_cluster.update(negative)  
+            total_cluster.update(positive_type) 
+
+            out_hard = self.type_list - total_cluster
+            out_length = min(len(out_hard), split_num)
+            if out_length != 0:
+                out_hard = random.sample(list(out_hard), out_length)
+                total_cluster.update(out_hard)
+            total_cluster = list(total_cluster)
+
+        if not random_sort:
+            total_cluster = sorted(total_cluster)
+        else:
+            random.shuffle(total_cluster)
+
+        tmp_total_schemas = []
+        for it in total_cluster:
+            if it in positive_type:
+                negative_role = self.type_role_dict[it] - positive_type_role[it]
+                negative_role = list(negative_role)
+                if self.negative > 0: 
+                    neg_length = sum(np.random.binomial(1, self.negative_role, len(self.type_role_dict[it])))
+                    if len(positive_type_role[it]) == 0:
+                        neg_length = max(neg_length, 1)
+                    neg_length = min(neg_length, len(negative_role))
+                    negative_role = random.sample(negative_role, neg_length)
+                arguments = negative_role + list(positive_type_role[it])
+            else:
+                negative_role = list(self.type_role_dict[it])
+                if self.negative > 0:
+                    neg_length = sum(np.random.binomial(1, self.negative_role, len(self.type_role_dict[it])))
+                    if len(positive_type_role[it]) == 0:
+                        neg_length = max(neg_length, 1)
+                    neg_length = min(neg_length, len(negative_role))
+                    negative_role = random.sample(negative_role, neg_length)
+                arguments = negative_role
+            if not random_sort:
+                arguments = sorted(arguments)
+            else:
+                random.shuffle(arguments)
+            tmp_total_schemas.append((it, arguments))
+
+        return self.split_total_by_num(split_num, tmp_total_schemas)
