@@ -28,8 +28,11 @@
     - [3.2下载数据和模型](#32下载数据和模型)
     - [3.3LoRA微调](#33lora微调)
   - [4.领域内数据继续训练](#4领域内数据继续训练)
-      - [4.1训练数据转换](#41训练数据转换)
-      - [4.2继续训练](#42继续训练)
+    - [4.1训练数据转换](#41训练数据转换)
+    - [4.2继续训练](#42继续训练)
+    - [4.3OneKE继续训练](#43oneke继续训练)
+      - [4.3.1全监督训练](#431全监督训练)
+      - [4.3.2Lora训练](#432lora训练)
   - [5.预测](#5预测)
     - [5.1测试数据转换](#51测试数据转换)
     - [5.2基础模型+Lora预测](#52基础模型lora预测)
@@ -42,6 +45,7 @@
 
 
 ## 新闻
+* [2024/04] 浙江大学与蚂蚁集团依托多年积累的知识图谱与自然语言处理技术，与2024年4月联合升级并发布新版中英双语知识抽取大模型 [OneKE](https://huggingface.co/zjunlp/OneKE)。该模型采用基于Schema的轮询指令构造技术，专门针对提升大模型在结构化信息抽取的泛化能力进行了优化。
 * [2024/02] 我们发布了一个大规模(`0.32B` tokens)高质量**双语**(中文和英文)信息抽取(IE)指令微调数据集，名为 [IEPile](https://huggingface.co/datasets/zjunlp/iepie), 以及基于 `IEPile` 训练的两个模型[baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora)、[llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora)。
 * [2023/10] 我们发布了一个新的**双语**(中文和英文)基于主题的信息抽取(IE)指令数据集，名为[InstructIE](https://huggingface.co/datasets/zjunlp/InstructIE)和[论文](https://arxiv.org/abs/2305.11527)。
 * [2023/08] 我们推出了专用于信息抽取(IE)的13B模型，名为[knowlm-13b-ie](https://huggingface.co/zjunlp/knowlm-13b-ie/tree/main)。
@@ -58,7 +62,7 @@
 > 请注意，以上提供的数据集链接中所含数据已经排除了与ACE2005数据集相关的部分。若您需要访问未经过滤的完整数据集，并且已成功获取所需的权限，敬请通过电子邮件方式联系 guihonghao@zju.edu.cn 或 zhangningyu@zju.edu.cn。我们将提供完整数据集资源。
 
 
-**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(基于Baichuan2)`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
+**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(基于Baichuan2)`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/OneKE](https://huggingface.co/zjunlp/OneKE)
 
 
 ![statistic](./assets/statistic.jpg)
@@ -283,7 +287,7 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
 尽管 `Baichuan2-IEPile` 和 `LLaMA2-IEPile` 模型已在多个通用数据集上接受了广泛的指令微调，并因此获得了一定的**通用信息抽取能力**，但它们在**特定领域**(如`法律`、`教育`、`科学`、`电信`)的数据处理上可能仍显示出一定的局限性。针对这一挑战，建议对这些模型在特定领域的数据集上进行**二次训练**。这将有助于模型更好地适应特定领域的语义和结构特征，从而增强其在**该领域内的信息抽取能力**。
 
 
-#### 4.1训练数据转换
+### 4.1训练数据转换
 
 首先, 需要将**数据格式化**以包含`instruction`、`output`字段。为此，我们提供了一个脚本 [convert_func.py](./ie2instruction/convert_func.py)，它可以将数据批量转换成模型可以直接使用的格式。
 
@@ -314,9 +318,9 @@ python ie2instruction/convert_func.py \
 
 
 
-#### 4.2继续训练
+### 4.2继续训练
 
-**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(基于Baichuan2)`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
+**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(基于Baichuan2)`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/OneKE](https://huggingface.co/zjunlp/OneKE)
 
 
 ```bash
@@ -367,6 +371,75 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
 脚本可以在 [ft_scripts/fine_continue.bash](./ft_scripts/fine_continue.bash) 中找到。
 
 
+### 4.3OneKE继续训练
+
+#### 4.3.1全监督训练
+
+```bash
+output_dir='lora/OneKE-continue'
+mkdir -p ${output_dir}
+CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 src/test_finetune.py \
+    --do_train --do_eval \
+    --overwrite_output_dir \
+    --model_name_or_path 'models/OneKE' \
+    --stage 'sft' \
+    --model_name 'llama' \
+    --template 'llama2_zh' \
+    --train_file 'data/train.json' \
+    --valid_file 'data/dev.json' \
+    --output_dir=${output_dir} \
+    --per_device_train_batch_size 2 \
+    --per_device_eval_batch_size 2 \
+    --gradient_accumulation_steps 4 \
+    --preprocessing_num_workers 16 \
+    --num_train_epochs 10 \
+    --learning_rate 5e-5 \
+    --max_grad_norm 0.5 \
+    --optim "adamw_torch" \
+    --max_source_length 400 \
+    --cutoff_len 700 \
+    --max_target_length 300 \
+    --evaluation_strategy "epoch" \
+    --save_strategy "epoch" \
+    --save_total_limit 10 \
+    --bf16 
+```
+
+#### 4.3.2Lora训练
+
+```bash
+output_dir='lora/OneKE-continue-lora'
+mkdir -p ${output_dir}
+CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 src/test_finetune.py \
+    --do_train --do_eval \
+    --overwrite_output_dir \
+    --model_name_or_path 'models/OneKE' \
+    --stage 'sft' \
+    --model_name 'llama' \
+    --template 'llama2_zh' \
+    --train_file 'data/train.json' \
+    --valid_file 'data/dev.json' \
+    --output_dir=${output_dir} \
+    --per_device_train_batch_size 2 \
+    --per_device_eval_batch_size 2 \
+    --gradient_accumulation_steps 4 \
+    --preprocessing_num_workers 16 \
+    --num_train_epochs 10 \
+    --learning_rate 5e-5 \
+    --max_grad_norm 0.5 \
+    --optim "adamw_torch" \
+    --max_source_length 400 \
+    --cutoff_len 700 \
+    --max_target_length 300 \
+    --evaluation_strategy "epoch" \
+    --save_strategy "epoch" \
+    --save_total_limit 10 \
+    --lora_r 64 \
+    --lora_alpha 64 \
+    --lora_dropout 0.05 \
+    --bf16 
+```
+
 
 ## 5.预测
 
@@ -394,12 +467,15 @@ python ie2instruction/convert_func.py \
 
 ### 5.2基础模型+Lora预测
 
-**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora)
+**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/OneKE](https://huggingface.co/zjunlp/OneKE)
+
 
 | checkpoint_dir | model_name_or_path | moadel_name | fp16/bf16 | template | 
 | --- | --- | --- | --- | --- |
 | llama2-13b-iepile-lora | LLaMA2-13B-Chat | llama | bf16 | llama2 |
 | baichuan2-13b-iepile-lora | BaiChuan2-13B-Chat | baichuan | bf16 | baichuan2 |
+| OneKE | OneKE | llama | bf16 | llama2_zh |
+
 
 ⚠️ 注意使用**基础模型+Lora预测**时不仅需要下载Lora权重参数, 还要下载基础模型参数。例如: 使用`baichuan2-13b-iepile-lora`(--checkpoint_dir), 还需要下载`BaiChuan2-13B-Chat`(--model_name_or_path), 🚫**不能**只设置 `--model_name_or_path lora/baichuan2-13b-iepile-lora`。
 
@@ -434,22 +510,23 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 
 ### 5.3IE专用模型预测
 
-**`knowlm-ie-v2(based on Baichuan2)`** 模型下载链接：[zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
+**`OneKE(based on chinese-alpaca2)`** 模型下载链接：[zjunlp/OneKE](https://huggingface.co/zjunlp/OneKE)
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --stage sft \
-    --model_name_or_path 'models/KnowLM-IE-v2' \
-    --model_name 'baichuan' \
-    --template 'baichuan2' \
+    --model_name_or_path 'models/OneKE' \
+    --model_name 'llama' \
+    --template 'llama2_zh' \
     --do_predict \
-    --input_file 'data/input.json' \
-    --output_file 'results/KnowLM-IE-v2_output.json' \
+    --input_file 'data/NER/test.json' \
+    --output_file 'results/OneKE_output.json' \
     --output_dir 'lora/test' \
     --predict_with_generate \
     --cutoff_len 512 \
     --bf16 \
-    --max_new_tokens 300 
+    --max_new_tokens 300 \
+    --bits 4
 ```
 
 `model_name_or_path`: IE专用模型权重路径

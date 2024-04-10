@@ -30,6 +30,9 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
   - [4.Continued Training with In-Domain Data](#4continued-training-with-in-domain-data)
     - [4.1Training Data Conversion](#41training-data-conversion)
     - [4.2Continued Training](#42continued-training)
+    - [4.3Continued Training OneKE](#43continued-training-oneke)
+      - [4.3.1Full SFT](#431full-sft)
+      - [4.3.1Lora SFT](#431lora-sft)
   - [5.Prediction](#5prediction)
     - [5.1Test Data Conversion](#51test-data-conversion)
     - [5.2Basic Model + LoRA Prediction](#52basic-model--lora-prediction)
@@ -42,6 +45,7 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
 
 
 ## News
+* [2024/04] Zhejiang University and Ant Group, leveraging years of accumulated expertise in knowledge graphs and natural language processing, jointly upgraded and released a new bilingual (Chinese and English) knowledge extraction model called [OneKE](https://huggingface.co/zjunlp/OneKE) in April 2024. The model employs schema-based polling instruction construction technology specifically optimized to enhance the large model's generalization capabilities in structured information extraction.
 * [2024/02] We released a large-scale (0.32B tokens) high-quality bilingual (Chinese and English) Information Extraction (IE) instruction dataset named [IEPile](https://huggingface.co/datasets/zjunlp/iepie), along with two models trained on `IEPile`, [baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) and [llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora).
 * [2023/10] We released a new bilingual (Chinese and English) theme-based Information Extraction (IE) instruction dataset named [InstructIE](https://huggingface.co/datasets/zjunlp/InstructIE) with [paper](https://arxiv.org/abs/2305.11527).
 * [2023/08] We introduced a dedicated 13B model for Information Extraction (IE), named [knowlm-13b-ie](https://huggingface.co/zjunlp/knowlm-13b-ie/tree/main).
@@ -321,12 +325,13 @@ The converted training data will contain four fields: `task`, `source`, `instruc
 ### 4.2Continued Training
 
 
-Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`knowlm-ie-v2(based on Baichuan2)`**: [zjunlp/llama2-13b-IEPile-lora](https://huggingface.co/zjunlp/llama2-13b-IEPile-lora/tree/main) | [zjunlp/baichuan2-13b-IEPile-lora](https://huggingface.co/zjunlp/baichuan2-13b-IEPile-lora) | [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
+Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`OneKE(based on chinese-alpaca2)`**: [zjunlp/llama2-13b-IEPile-lora](https://huggingface.co/zjunlp/llama2-13b-IEPile-lora/tree/main) | [zjunlp/baichuan2-13b-IEPile-lora](https://huggingface.co/zjunlp/baichuan2-13b-IEPile-lora) | [zjunlp/OneKE](https://huggingface.co/zjunlp/OneKE)
 
 | checkpoint_dir | model_name_or_path | moadel_name | fp16/bf16 | template | 
 | --- | --- | --- | --- | --- |
 | llama2-13b-iepile-lora | LLaMA2-13B-Chat | llama | bf16 | llama2 |
 | baichuan2-13b-iepile-lora | BaiChuan2-13B-Chat | baichuan | bf16 | baichuan2 |
+| OneKE | OneKE | llama | bf16 | llama2_zh |
 
 ```bash
 output_dir='lora/llama2-13b-chat-v1-continue'
@@ -378,8 +383,81 @@ The script can be found at [ft_scripts/fine_continue.bash](./ft_scripts/fine_con
 
 
 
-## 5.Prediction
+### 4.3Continued Training OneKE
 
+
+#### 4.3.1Full SFT
+
+```bash
+output_dir='lora/OneKE-continue'
+mkdir -p ${output_dir}
+CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 src/test_finetune.py \
+    --do_train --do_eval \
+    --overwrite_output_dir \
+    --model_name_or_path 'models/OneKE' \
+    --stage 'sft' \
+    --model_name 'llama' \
+    --template 'llama2_zh' \
+    --train_file 'data/train.json' \
+    --valid_file 'data/dev.json' \
+    --output_dir=${output_dir} \
+    --per_device_train_batch_size 2 \
+    --per_device_eval_batch_size 2 \
+    --gradient_accumulation_steps 4 \
+    --preprocessing_num_workers 16 \
+    --num_train_epochs 10 \
+    --learning_rate 5e-5 \
+    --max_grad_norm 0.5 \
+    --optim "adamw_torch" \
+    --max_source_length 400 \
+    --cutoff_len 700 \
+    --max_target_length 300 \
+    --evaluation_strategy "epoch" \
+    --save_strategy "epoch" \
+    --save_total_limit 10 \
+    --bf16 
+```
+
+
+
+#### 4.3.1Lora SFT
+
+```bash
+output_dir='lora/OneKE-continue-lora'
+mkdir -p ${output_dir}
+CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 src/test_finetune.py \
+    --do_train --do_eval \
+    --overwrite_output_dir \
+    --model_name_or_path 'models/OneKE' \
+    --stage 'sft' \
+    --model_name 'llama' \
+    --template 'llama2_zh' \
+    --train_file 'data/train.json' \
+    --valid_file 'data/dev.json' \
+    --output_dir=${output_dir} \
+    --per_device_train_batch_size 2 \
+    --per_device_eval_batch_size 2 \
+    --gradient_accumulation_steps 4 \
+    --preprocessing_num_workers 16 \
+    --num_train_epochs 10 \
+    --learning_rate 5e-5 \
+    --max_grad_norm 0.5 \
+    --optim "adamw_torch" \
+    --max_source_length 400 \
+    --cutoff_len 700 \
+    --max_target_length 300 \
+    --evaluation_strategy "epoch" \
+    --save_strategy "epoch" \
+    --save_total_limit 10 \
+    --lora_r 64 \
+    --lora_alpha 64 \
+    --lora_dropout 0.05 \
+    --bf16 
+```
+
+
+
+## 5.Prediction
 
 ### 5.1Test Data Conversion
 
@@ -418,14 +496,15 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --model_name 'llama' \
     --template 'llama2' \
     --do_predict \
-    --input_file 'data/input.json' \
+    --input_file 'data/NER/test.json' \
     --output_file 'results/llama2-13b-IEPile-lora_output.json' \
     --finetuning_type lora \
     --output_dir 'lora/test' \
     --predict_with_generate \
     --cutoff_len 512 \
     --bf16 \
-    --max_new_tokens 300
+    --max_new_tokens 300 \
+    --bits 4
 ```
 
 * During inference, `model_name`, `template`, and `bf16` must be the same as the settings used during training.
@@ -438,25 +517,27 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 > Quantization can be performed by setting bits to 4; it is recommended for the RTX3090.
 
 
+
 ### 5.3IE-Specific Model Prediction
 
-Model download links for **`knowlm-ie-v2(based on Baichuan2)`**: [zjunlp/knowlm-ie-v2](https://huggingface.co/zjunlp/knowlm-ie-v2)
+Model download links for **`OneKE(based on chinese-alpaca2)`**: [zjunlp/OneKE](https://huggingface.co/zjunlp/OneKE)
 
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python src/inference.py \
     --stage sft \
-    --model_name_or_path 'models/KnowLM-IE-v2' \
-    --model_name 'baichuan' \
-    --template 'baichuan2' \
+    --model_name_or_path 'models/OneKE' \
+    --model_name 'llama' \
+    --template 'llama2_zh' \
     --do_predict \
-    --input_file 'data/input.json' \
-    --output_file 'results/KnowLM-IE-v2_output.json' \
+    --input_file 'data/NER/test.json' \
+    --output_file 'results/OneKE_output.json' \
     --output_dir 'lora/test' \
     --predict_with_generate \
     --cutoff_len 512 \
     --bf16 \
-    --max_new_tokens 300
+    --max_new_tokens 300 \
+    --bits 4
 ```
 
 `model_name_or_path`: The path to the weights of the model specialized for Information Extraction (IE).
