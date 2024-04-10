@@ -7,7 +7,7 @@
 这是论文 [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](https://arxiv.org/abs/2402.14710) 的官方仓库。
 
 
-[**数据集**](https://huggingface.co/datasets/zjunlp/iepie) |
+[**数据集**](https://huggingface.co/datasets/zjunlp/iepile) |
 [**论文**](https://huggingface.co/papers/2402.14710) |
 [**使用方法**](./README_CN.md#3使用iepile训练模型) |
 [**局限性**](./README_CN.md#8局限) |
@@ -46,7 +46,7 @@
 
 ## 新闻
 * [2024/04] 浙江大学与蚂蚁集团依托多年积累的知识图谱与自然语言处理技术，与2024年4月联合升级并发布新版中英双语知识抽取大模型 [OneKE](https://huggingface.co/zjunlp/OneKE)。该模型采用基于Schema的轮询指令构造技术，专门针对提升大模型在结构化信息抽取的泛化能力进行了优化。
-* [2024/02] 我们发布了一个大规模(`0.32B` tokens)高质量**双语**(中文和英文)信息抽取(IE)指令微调数据集，名为 [IEPile](https://huggingface.co/datasets/zjunlp/iepie), 以及基于 `IEPile` 训练的两个模型[baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora)、[llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora)。
+* [2024/02] 我们发布了一个大规模(`0.32B` tokens)高质量**双语**(中文和英文)信息抽取(IE)指令微调数据集，名为 [IEPile](https://huggingface.co/datasets/zjunlp/iepile), 以及基于 `IEPile` 训练的两个模型[baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora)、[llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora)。
 * [2023/10] 我们发布了一个新的**双语**(中文和英文)基于主题的信息抽取(IE)指令数据集，名为[InstructIE](https://huggingface.co/datasets/zjunlp/InstructIE)和[论文](https://arxiv.org/abs/2305.11527)。
 * [2023/08] 我们推出了专用于信息抽取(IE)的13B模型，名为[knowlm-13b-ie](https://huggingface.co/zjunlp/knowlm-13b-ie/tree/main)。
 * [2023/05] 我们启动了基于指令的信息抽取项目。
@@ -125,24 +125,7 @@
 
 ### 2.2IEPile的数据格式
 
-`IEPile` 中的每条数据均包含 `task`, `source`, `instruction`, `output` 4个字段, 以下是各字段的说明
-
-| 字段 | 说明 |
-| :---: | :---: |
-| task | 该实例所属的任务, (`NER`、`RE`、`EE`、`EET`、`EEA`) 5种任务之一。 |
-| source | 该实例所属的数据集 |
-| instruction | 输入模型的指令, 经过json.dumps处理成JSON字符串, 包括`"instruction"`, `"schema"`, `"input"`三个字段 |
-| output | 输出, 采用字典的json字符串的格式, key是schema, value是抽取出的内容 |
-
-
-在`IEPile`中, **`instruction`** 的格式采纳了类JSON字符串的结构，实质上是一种字典型字符串，它由以下三个主要部分构成：
-(1) **`'instruction'`**: 任务描述, 它概述了指令的执行任务(`NER`、`RE`、`EE`、`EET`、`EEA`之一)。
-(2) **`'schema'`**: 待抽取的schema(`实体类型`, `关系类型`, `事件类型`)列表。
-(3) **`'input'`**: 待抽取的文本。
-
-
-[instruction.py](./ie2instruction/convert/utils/instruction.py) 中提供了各个任务的指令模版。
-
+`IEPile` 中的每条数据均包含 `task`, `source`, `instruction`, `output` 4个字段
 
 以下是一条**数据实例**：
 
@@ -181,6 +164,23 @@
 
 </details>
 
+以下是各字段的说明: 
+
+| 字段 | 说明 |
+| :---: | :---: |
+| task | 该实例所属的任务, (`NER`、`RE`、`EE`、`EET`、`EEA`) 5种任务之一。 |
+| source | 该实例所属的数据集 |
+| instruction | 输入模型的指令, 经过json.dumps处理成JSON字符串, 由`"instruction"`, `"schema"`, `"input"`三部分组成 |
+| output | 输出, 采用字典的json字符串的格式, key是schema, value是抽取出的内容 |
+
+
+在`IEPile`中, **`instruction`** 的格式采纳了类JSON字符串的结构，实质上是一种字典型字符串，它由以下三个主要部分构成：
+(1) **`'instruction'`**: 任务描述, 它概述了指令的执行任务(`NER`、`RE`、`EE`、`EET`、`EEA`之一)。
+(2) **`'schema'`**: 待抽取的schema(`实体类型`, `关系类型`, `事件类型`)列表。
+(3) **`'input'`**: 待抽取的文本。
+
+
+[instruction.py](./ie2instruction/convert/utils/instruction.py) 中提供了各个任务的指令模版。
 
 
 
@@ -221,6 +221,7 @@ mkdir lora         # lora微调结果放这
 ### 3.3LoRA微调
 
 > 重要提示：以下的所有命令均应在`IEPile`目录下执行。例如，如果您想运行微调脚本，您应该使用如下命令：bash ft_scripts/fine_llama.bash。请确保您的当前工作目录正确。
+> 请确保训练/验证文件中每条数据包含 `instruction`, `output` 字段。
 
 
 ```bash
@@ -315,6 +316,24 @@ python ie2instruction/convert_func.py \
 * `split`: 指定数据集类型，可选`train`或`test`。
 
 转换后的训练数据将包含 `task`, `source`, `instruction`, `output` 四个字段。
+
+
+**`难负样本生成`**: 促进语义相近容易混淆schema共现, 减少训练样本量
+```bash
+python ie2instruction/convert_func.py \
+    --src_path data/SPO/sample.json \
+    --tgt_path data/SPO/train.json \
+    --schema_path data/SPO/schema.json \
+    --cluster_mode \
+    --hard_negative_path data/hard_negative/SPO_DuIE2.0.json \
+    --language zh \
+    --task SPO \
+    --split_num 4 \
+    --random_sort \
+    --split train
+```
+
+增加`--cluster_mode`, `--hard_negative_path data/hard_negative/SPO_DuIE2.0.json` 参数, `--hard_negative_path`对应难负样本字典, [hard_dict.json](./data/hard_negative/hard_dict.json) 中有IEPILE中涉及的所有数据集的难负样本字典。
 
 
 

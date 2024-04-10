@@ -7,7 +7,7 @@
 
 This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](https://arxiv.org/abs/2402.14710)
 
-[**Datasets**](https://huggingface.co/datasets/zjunlp/iepie) | 
+[**Datasets**](https://huggingface.co/datasets/zjunlp/iepile) | 
 [**Paper**](https://huggingface.co/papers/2402.14710) | 
 [**Usage**](./README.md#3using-iepile-to-train-models) |
 [**Limitations**](./README.md#8limitations) |
@@ -46,7 +46,7 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
 
 ## News
 * [2024/04] Zhejiang University and Ant Group, leveraging years of accumulated expertise in knowledge graphs and natural language processing, jointly upgraded and released a new bilingual (Chinese and English) knowledge extraction model called [OneKE](https://huggingface.co/zjunlp/OneKE) in April 2024. The model employs schema-based polling instruction construction technology specifically optimized to enhance the large model's generalization capabilities in structured information extraction.
-* [2024/02] We released a large-scale (0.32B tokens) high-quality bilingual (Chinese and English) Information Extraction (IE) instruction dataset named [IEPile](https://huggingface.co/datasets/zjunlp/iepie), along with two models trained on `IEPile`, [baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) and [llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora).
+* [2024/02] We released a large-scale (0.32B tokens) high-quality bilingual (Chinese and English) Information Extraction (IE) instruction dataset named [IEPile](https://huggingface.co/datasets/zjunlp/iepile), along with two models trained on `IEPile`, [baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) and [llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora).
 * [2023/10] We released a new bilingual (Chinese and English) theme-based Information Extraction (IE) instruction dataset named [InstructIE](https://huggingface.co/datasets/zjunlp/InstructIE) with [paper](https://arxiv.org/abs/2305.11527).
 * [2023/08] We introduced a dedicated 13B model for Information Extraction (IE), named [knowlm-13b-ie](https://huggingface.co/zjunlp/knowlm-13b-ie/tree/main).
 * [2023/05] We initiated an instruction-based Information Extraction project.
@@ -126,23 +126,8 @@ Subsequently, we obtain the final schema set $L' = Pos\_L + Neg\_L$. We employ a
 
 ### 2.2Data Format of IEPile
 
-Each instance in `IEPile` contains four fields: `task`, `source`, `instruction`, and `output`. Below are the explanations for each field:
+Each instance in `IEPile` contains four fields: `task`, `source`, `instruction`, and `output`. 
 
-
-| Field | Description |
-| :---: | :---: |
-| task | The task to which the instance belongs, one of the five types (`NER`, `RE`, `EE`, `EET`, `EEA`). |
-| source | The dataset to which the instance belongs. |
-| instruction | The instruction for inputting into the model, processed into a JSON string via json.dumps, including three fields: `"instruction"`, `"schema"`, and `"input"`. |
-| output | The output in the format of a dictionary's JSON string, where the key is the schema, and the value is the extracted content. |
-
-
-In `IEPile`, the **instruction** format of `IEPile` adopts a JSON-like string structure, which is essentially a dictionary-type string composed of the following three main components:
-(1) **`'instruction'`**: Task description, which outlines the task to be performed by the instruction (one of `NER`, `RE`, `EE`, `EET`, `EEA`).
-(2) **`'schema'`**: A list of schemas to be extracted (`entity types`, `relation types`, `event types`).
-(3) **`'input'`**: The text from which information is to be extracted.
-
-The file [instruction.py](./ie2instruction/convert/utils/instruction.py) provides instructions for various tasks.
 
 Below is a **data example**:
 
@@ -180,6 +165,26 @@ The data instance belongs to the `NER` task, is part of the `CoNLL2003` dataset,
 ```
 
 </details>
+
+
+Below are the explanations for each field:
+
+| Field | Description |
+| :---: | :---: |
+| task | The task to which the instance belongs, one of the five types (`NER`, `RE`, `EE`, `EET`, `EEA`). |
+| source | The dataset to which the instance belongs. |
+| instruction | The instruction for inputting into the model, processed into a JSON string via json.dumps, including three parts: `"instruction"`, `"schema"`, and `"input"`. |
+| output | The output in the format of a dictionary's JSON string, where the key is the schema, and the value is the extracted content. |
+
+
+
+In `IEPile`, the **instruction** format of `IEPile` adopts a JSON-like string structure, which is essentially a dictionary-type string composed of the following three main components:
+(1) **`'instruction'`**: Task description, which outlines the task to be performed by the instruction (one of `NER`, `RE`, `EE`, `EET`, `EEA`).
+(2) **`'schema'`**: A list of schemas to be extracted (`entity types`, `relation types`, `event types`).
+(3) **`'input'`**: The text from which information is to be extracted.
+
+The file [instruction.py](./ie2instruction/convert/utils/instruction.py) provides instructions for various tasks.
+
 
 
 
@@ -225,6 +230,7 @@ Data should be placed in the `./data` directory.
 ### 3.3LoRA Fine-tuning
 
 > Important Note: All the commands below should be executed within the `IEPile` directory. For example, if you want to run the fine-tuning script, you should use the following command: `bash ft_scripts/fine_llama.bash`. Please ensure your current working directory is correct.
+> Please make sure that each entry in the training/validation files includes the `instruction`, `output` fields.
 
 
 
@@ -320,6 +326,27 @@ python ie2instruction/convert_func.py \
 * `split`: Specifies the type of dataset, with options `train` or `test`.
 
 The converted training data will contain four fields: `task`, `source`, `instruction`, `output`.
+
+
+
+**`Generation of Hard Negative Samples`**: Promote co-occurrence of semantically close and easily confused schemas, reducing the amount of training samples.
+
+```bash
+python ie2instruction/convert_func.py \
+    --src_path data/SPO/sample.json \
+    --tgt_path data/SPO/train.json \
+    --schema_path data/SPO/schema.json \
+    --cluster_mode \
+    --hard_negative_path data/hard_negative/SPO_DuIE2.0.json \
+    --language zh \
+    --task SPO \
+    --split_num 4 \
+    --random_sort \
+    --split train
+```
+
+The addition of the `--cluster_mode` and `--hard_negative_path data/hard_negative/SPO_DuIE2.0.json` parameters, where `--hard_negative_path` corresponds to the dictionary of difficult negative samples. The [hard_dict.json](./data/hard_negative/hard_dict.json) contains dictionaries of hard negative samples for all datasets involved in IEPILE.
+
 
 
 ### 4.2Continued Training

@@ -76,7 +76,10 @@ def convert_output(converter, text, schemas, task_record):
 def get_train_data(datas, processer, converter, options):
     results = []
     for record in datas:
-        total_schemas = processer.negative_sample(record, options.split_num, options.random_sort)        
+        if options.cluster_mode:
+            total_schemas = processer.negative_cluster_sample(record, options.split_num, options.random_sort)
+        else:
+            total_schemas = processer.negative_sample(record, options.split_num, options.random_sort)        
         task_record = processer.get_task_record(record)
         output_texts = convert_output(converter, record['text'], total_schemas, task_record)    # 按照split_num切分schema和output_text
         for schema, output_text in zip(total_schemas, output_texts):
@@ -97,9 +100,11 @@ def process(options):
     processer = processer_class.read_from_file(    
         processer_class, options.schema_path, negative=-1
     )
+    if options.cluster_mode:
+        processer.set_hard_dict(json.load(open(options.hard_negative_path, 'r')))
     processer.set_negative(options.neg_schema)
+
     options.source = options.src_path.split('/')[-2]  # 用源路径的最后一个文件夹名作为source
-    
     datas = processer.read_data(options.src_path)
     if options.split == 'test':  
         results = get_test_data(datas, processer, options)
@@ -130,6 +135,20 @@ python ie2instruction/convert_func.py \
     --split_num 6 \
     --random_sort \
     --split train
+
+
+难负样本训练集数据生成:
+python ie2instruction/convert_func.py \
+    --src_path data/SPO/sample.json \
+    --tgt_path data/SPO/train.json \
+    --schema_path data/SPO/schema.json \
+    --cluster_mode \
+    --hard_negative_path data/hard_negative/SPO_DuIE2.0.json \
+    --language zh \
+    --task SPO \
+    --split_num 4 \
+    --random_sort \
+    --split train
 '''
 
 if __name__ == "__main__":
@@ -137,8 +156,10 @@ if __name__ == "__main__":
     parse.add_argument("--src_path", type=str, default="data/NER/sample.json")
     parse.add_argument("--tgt_path", type=str, default="data/NER/processed.json")
     parse.add_argument("--schema_path", type=str, default='data/NER/schema.json')
+    parse.add_argument("--hard_negative_path", type=str, default=None)
+    parse.add_argument("--cluster_mode", action='store_true', help="是否使用cluster模式, 负样本只包括难负样本+split_num个其他负样本")
     parse.add_argument("--language", type=str, default='zh', choices=['zh', 'en'], help="不同语言使用的template及转换脚本不同")
-    parse.add_argument("--task", type=str, default="NER", choices=['RE', 'NER', 'EE', 'EET', 'EEA'])
+    parse.add_argument("--task", type=str, default="NER", choices=['RE', 'NER', 'EE', 'EET', 'EEA', 'SPO'])
     parse.add_argument("--split", type=str, default='train', choices=['train', 'test'])
 
     parse.add_argument("--split_num", type=int, default=4, help="单个指令中最大schema数量。默认为4, -1表示不切分, 各个任务推荐的切分数量不同: NER:6, RE:4, EE:4, EET:4, EEA:4")

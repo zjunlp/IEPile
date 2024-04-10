@@ -4,7 +4,7 @@ from .eet_extracter import EETExtracter
 from .re_extracter import REExtracter
 from .ner_extracter import NERExtracter
 from .kg_extracter import KGExtracter
-from convert.utils.constant import NER, RE, EE, EEA, EET, KG, MRC
+from convert.utils.constant import NER, RE, EE, EEA, EET, KG
 
 
 def get_extracter(task):
