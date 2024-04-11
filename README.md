@@ -360,6 +360,7 @@ Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`OneKE
 | baichuan2-13b-iepile-lora | BaiChuan2-13B-Chat | baichuan | bf16 | baichuan2 |
 | OneKE | OneKE | llama | bf16 | llama2_zh |
 
+
 ```bash
 output_dir='lora/llama2-13b-chat-v1-continue'
 mkdir -p ${output_dir}
@@ -512,6 +513,11 @@ The `label` field will be used for subsequent evaluation. If the input data lack
 Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** : [zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) 
 
 
+| checkpoint_dir | model_name_or_path | moadel_name | fp16/bf16 | template | 
+| --- | --- | --- | --- | --- |
+| llama2-13b-iepile-lora | LLaMA2-13B-Chat | llama | bf16 | llama2 |
+| baichuan2-13b-iepile-lora | BaiChuan2-13B-Chat | baichuan | bf16 | baichuan2 |
+
 ⚠️ When performing the **Basic Model + LoRA Prediction**, it's necessary not only to download the Lora weight parameters but also the base model parameters. For example, when using `baichuan2-13b-iepile-lora` (specified with `--checkpoint_dir`), you must also download `BaiChuan2-13B-Chat` (specified with `--model_name_or_path`). 🚫**You cannot** merely set `--model_name_or_path lora/baichuan2-13b-iepile-lora`.
 
 
@@ -546,6 +552,11 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 
 
 ### 5.3IE-Specific Model Prediction
+
+| checkpoint_dir | model_name_or_path | moadel_name | fp16/bf16 | template | 
+| --- | --- | --- | --- | --- |
+| OneKE | OneKE | llama | bf16 | llama2_zh |
+
 
 Model download links for **`OneKE(based on chinese-alpaca2)`**: [zjunlp/OneKE](https://huggingface.co/zjunlp/OneKE)
 

@@ -341,6 +341,12 @@ python ie2instruction/convert_func.py \
 
 **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`OneKE`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/OneKE](https://huggingface.co/zjunlp/OneKE)
 
+| checkpoint_dir | model_name_or_path | moadel_name | fp16/bf16 | template | 
+| --- | --- | --- | --- | --- |
+| llama2-13b-iepile-lora | LLaMA2-13B-Chat | llama | bf16 | llama2 |
+| baichuan2-13b-iepile-lora | BaiChuan2-13B-Chat | baichuan | bf16 | baichuan2 |
+| OneKE | OneKE | llama | bf16 | llama2_zh |
+
 
 ```bash
 output_dir='lora/llama2-13b-chat-v1-continue'
@@ -493,7 +499,6 @@ python ie2instruction/convert_func.py \
 | --- | --- | --- | --- | --- |
 | llama2-13b-iepile-lora | LLaMA2-13B-Chat | llama | bf16 | llama2 |
 | baichuan2-13b-iepile-lora | BaiChuan2-13B-Chat | baichuan | bf16 | baichuan2 |
-| OneKE | OneKE | llama | bf16 | llama2_zh |
 
 
 ⚠️ 注意使用**基础模型+Lora预测**时不仅需要下载Lora权重参数, 还要下载基础模型参数。例如: 使用`baichuan2-13b-iepile-lora`(--checkpoint_dir), 还需要下载`BaiChuan2-13B-Chat`(--model_name_or_path), 🚫**不能**只设置 `--model_name_or_path lora/baichuan2-13b-iepile-lora`。
@@ -528,6 +533,12 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 > 可通过设置 `bits` = 4 进行量化, RTX3090建议量化。
 
 ### 5.3IE专用模型预测
+
+
+| checkpoint_dir | model_name_or_path | moadel_name | fp16/bf16 | template | 
+| --- | --- | --- | --- | --- |
+| OneKE | OneKE | llama | bf16 | llama2_zh |
+
 
 **`OneKE(based on chinese-alpaca2)`** 模型下载链接：[zjunlp/OneKE](https://huggingface.co/zjunlp/OneKE)
 
