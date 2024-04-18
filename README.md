@@ -45,8 +45,8 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
 
 
 ## News
-* [2024/04] Zhejiang University and Ant Group, leveraging years of accumulated expertise in knowledge graphs and natural language processing, jointly upgraded and released a new bilingual (Chinese and English) knowledge extraction model called [OneKE](https://huggingface.co/zjunlp/OneKE) in April 2024. The model employs schema-based polling instruction construction technology specifically optimized to enhance the large model's generalization capabilities in structured information extraction.
-* [2024/02] We released a large-scale (0.32B tokens) high-quality bilingual (Chinese and English) Information Extraction (IE) instruction dataset named [IEPile](https://huggingface.co/datasets/zjunlp/iepile), along with two models trained on `IEPile`, [baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) and [llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora).
+* [2024/04] We release a new bilingual (Chinese and English) schema-based information extraction model called [OneKE](https://huggingface.co/zjunlp/OneKE).
+* [2024/02] We release a large-scale (0.32B tokens) high-quality bilingual (Chinese and English) Information Extraction (IE) instruction dataset named [IEPile](https://huggingface.co/datasets/zjunlp/iepie), along with two models trained with `IEPile`, [baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) and [llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora).
 * [2023/10] We released a new bilingual (Chinese and English) theme-based Information Extraction (IE) instruction dataset named [InstructIE](https://huggingface.co/datasets/zjunlp/InstructIE) with [paper](https://arxiv.org/abs/2305.11527).
 * [2023/08] We introduced a dedicated 13B model for Information Extraction (IE), named [knowlm-13b-ie](https://huggingface.co/zjunlp/knowlm-13b-ie/tree/main).
 * [2023/05] We initiated an instruction-based Information Extraction project.
