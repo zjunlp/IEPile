@@ -269,7 +269,6 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
 * `val_set_size`: **验证集的样本数量**, 默认为1000。
 * `per_device_train_batch_size`, `per_device_eval_batch_size`: 每台GPU设备上的`batch_size`, 根据显存大小调整, RTX3090建议设置2~4。
 * `max_source_length`, `max_target_length`, `cutoff_len`: 最大输入、输出长度、截断长度, 截断长度可以简单地视作最大输入长度 + 最大输出长度, 需根据具体需求和显存大小设置合适值。
-* `deepspeed`: GPU显存不够可以去掉这个参数。
 * 如果出现在eval阶段后保存模型时爆显存的情况, 请设置 `evaluation_strategy no`
 
 > 可通过设置 `bits` = 4 进行量化, RTX3090建议量化。

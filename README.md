@@ -277,7 +277,6 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
 * `val_set_size`: The number of samples in the **validation set**, default is 1000.
 * `per_device_train_batch_size`, `per_device_eval_batch_size`: The `batch_size` on each GPU device, adjust according to the size of the memory. For RTX3090, it is recommended to set between 2 and 4.
 * `max_source_length`, `max_target_length`, `cutoff_len`: The maximum input and output lengths, and the cutoff length, which can simply be considered as the maximum input length + maximum output length. Set appropriate values according to specific needs and memory size.
-* `deepspeed`: If there is not enough GPU memory, you can remove this parameter.
 * If running out of GPU memory occurs when saving the model after the evaluation phase, please set `evaluation_strategy` to `no`.
 
 > Quantization can be performed by setting bits to 4; it is recommended for the RTX3090.
