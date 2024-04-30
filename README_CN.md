@@ -74,10 +74,14 @@
 基于**IEPile**，我们对 `Baichuan2-13B-Chat` 和 `LLaMA2-13B-Chat` 模型应用了 `Lora` 技术进行了微调。实验证明，微调后的 `Baichuan2-IEPile` 和 `LLaMA2-IEPile` 模型在全监督训练集上取得了可比的结果，并且在**零样本信息抽取任务**中取得了提升。
 
 
+<details>
+  <summary><b>零样本信息抽取结果</b></summary>
+
 ![zero_en](./assets/zero_en.jpg)
 
 ![zero_zh](./assets/zero_zh.jpg)
 
+</details>
 
 <details>
   <summary><b>全监督数据集结果</b></summary>
