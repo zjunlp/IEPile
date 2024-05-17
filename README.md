@@ -45,6 +45,7 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
 
 
 ## News
+* [2024/05] The paper [IEPile: Unearthing Large-Scale Schema-Based Information Extraction Corpus](https://doi.org/10.48550/arXiv.2402.14710) is accepted by ACL 2024 main conference.
 * [2024/04] We release a new bilingual (Chinese and English) schema-based information extraction model called [OneKE](https://huggingface.co/zjunlp/OneKE)  based on Chinese-Alpaca-2-13B.
 * [2024/02] We release a large-scale (0.32B tokens) high-quality bilingual (Chinese and English) Information Extraction (IE) instruction dataset named [IEPile](https://huggingface.co/datasets/zjunlp/iepie), along with two models trained with `IEPile`, [baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) and [llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora).
 * [2023/10] We released a new bilingual (Chinese and English) theme-based Information Extraction (IE) instruction dataset named [InstructIE](https://huggingface.co/datasets/zjunlp/InstructIE) with [paper](https://arxiv.org/abs/2305.11527).
