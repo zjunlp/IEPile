@@ -352,14 +352,16 @@ The addition of the `--cluster_mode` and `--hard_negative_path data/hard_negativ
 ### 4.2Continued Training
 
 
-Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`OneKE(based on chinese-alpaca2)`**: [zjunlp/llama2-13b-IEPile-lora](https://huggingface.co/zjunlp/llama2-13b-IEPile-lora/tree/main) | [zjunlp/baichuan2-13b-IEPile-lora](https://huggingface.co/zjunlp/baichuan2-13b-IEPile-lora) | [zjunlp/OneKE](https://huggingface.co/zjunlp/OneKE)
+Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`LLaMA3-IEPile`** | **`Qwen1.5-IEPile`** | **`OneKE`**: [zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/llama3-8b-iepile-lora](https://huggingface.co/zjunlp/llama3-8b-iepile-lora) | [zjunlp/qwen1.5-14b-iepile-lora](https://huggingface.co/zjunlp/qwen1.5-14b-iepile-lora) | [zjunlp/OneKE](https://huggingface.co/zjunlp/OneKE)
+
 
 | checkpoint_dir | model_name_or_path | moadel_name | fp16/bf16 | template | 
 | --- | --- | --- | --- | --- |
 | llama2-13b-iepile-lora | LLaMA2-13B-Chat | llama | bf16 | llama2 |
 | baichuan2-13b-iepile-lora | BaiChuan2-13B-Chat | baichuan | bf16 | baichuan2 |
+| llama3-8b-iepile-lora | LLaMA3-8B-Instruct | llama | bf16 | alpaca |
+| qwen1.5-14b-iepile-lora | Qwen1.5-14B-Chat | qwen2 | bf16 | qwen |
 | OneKE | OneKE | llama | bf16 | llama2_zh |
-
 
 ```bash
 output_dir='lora/llama2-13b-chat-v1-continue'
@@ -517,6 +519,8 @@ Model download links for **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** : [zjunlp/
 | --- | --- | --- | --- | --- |
 | llama2-13b-iepile-lora | LLaMA2-13B-Chat | llama | bf16 | llama2 |
 | baichuan2-13b-iepile-lora | BaiChuan2-13B-Chat | baichuan | bf16 | baichuan2 |
+| llama3-8b-iepile-lora | LLaMA3-8B-Instruct | llama | bf16 | alpaca |
+| qwen1.5-14b-iepile-lora | Qwen1.5-14B-Chat | qwen2 | bf16 | qwen |
 
 ⚠️ When performing the **Basic Model + LoRA Prediction**, it's necessary not only to download the Lora weight parameters but also the base model parameters. For example, when using `baichuan2-13b-iepile-lora` (specified with `--checkpoint_dir`), you must also download `BaiChuan2-13B-Chat` (specified with `--model_name_or_path`). 🚫**You cannot** merely set `--model_name_or_path lora/baichuan2-13b-iepile-lora`.
 
