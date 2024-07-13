@@ -95,7 +95,6 @@ python -m vllm.entrypoints.openai.api_server --model zjunlp/OneKE
 
 ```
 curl http://localhost:8000/v1/completions -H "Content-Type: application/json" -d '{"model": "/data2/lkw/OneKE", "prompt": "[INST] <<SYS>>You are a helpful assistant. 你是一个乐于助人的助手。<</SYS>>{\"instruction\": \"You are an expert in named entity recognition. Please extract entities that match the schema definition from the input. Return an empty list if the entity type does not exist. Please respond in the format of a JSON string.\", \"schema\": [\"person\", \"organization\", \"else\", \"location\"], \"input\": \"284 Robert Allenby ( Australia ) 69 71 71 73 , Miguel Angel Martin ( Spain ) 75 70 71 68 ( Allenby won at first play-off hole )\"}[/INST]", "max_tokens": 1024, "temperature": 0}'
-
 ```
 
 ## 数据准备
