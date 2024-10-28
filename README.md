@@ -35,6 +35,7 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
       - [4.3.1Lora SFT](#431lora-sft)
   - [5.Prediction](#5prediction)
     - [5.1Test Data Conversion](#51test-data-conversion)
+    - [5.2IEPile Test Data](#52iepile-test-data)
     - [5.2Basic Model + LoRA Prediction](#52basic-model--lora-prediction)
     - [5.3IE-Specific Model Prediction](#53ie-specific-model-prediction)
   - [6.Evaluation](#6evaluation)
@@ -508,6 +509,49 @@ python ie2instruction/convert_func.py \
 When setting `split` to **test**, select the appropriate number of schemas according to the task type: **6 is recommended for NER, while 4 is recommended for RE, EE, EET, EEA**. The transformed test data will contain five fields: `id`, `task`, `source`, `instruction`, `label`.
 
 The `label` field will be used for subsequent evaluation. If the input data lacks the annotation fields (`entity`, `relation`, `event`), the transformed test data will not contain the `label` field, which is suitable for scenarios where no original annotated data is available.
+
+
+
+### 5.2IEPile Test Data
+
+Download the IEPile dataset from [Google Drive](https://drive.google.com/file/d/1jPdvXOTTxlAmHkn5XkeaaCFXQkYJk5Ng/view?usp=sharing) | [Hugging Face](https://huggingface.co/datasets/zjunlp/iepile) | [WiseModel](https://wisemodel.cn/datasets/zjunlp/IEPile) | [ModelScpoe](https://modelscope.cn/datasets/ZJUNLP/IEPile)
+
+The file tree is shown as follows:
+
+```bash
+IEPile
+├── train.json      # Training Set
+├── dev.json        # Validation Set
+├── IE-en           # English Unified Format Data
+│   ├── NER
+│   │   ├── CoNLL2003
+│   │   │   ├── train.json
+│   │   │   ├── dev.json
+│   │   │   ├── schema.json   # schema information file
+│   │   │   └── test.json
+│   │   ├── ...
+│   ├── RE
+│   ├── EE
+│   ├── EET
+│   ├── EEA
+├── IE-zh           # Chinese Unified Format Data
+│   ├── NER
+│   ├── RE
+│   ├── EE
+│   ├── EET
+│   ├── EEA
+```
+
+Batch test instruction data can be obtained through the following script:
+
+```bash
+bash ie2instruction/eval_data_convert.bash
+```
+
+> You need to set the dir_path in the first line of the script to the actual absolute path of the IEPile dataset.
+> Note: Due to the possible inconsistency in the order of labels in the converted schema sequence, there may be slight deviations in the evaluation results.
+
+
 
 
 ### 5.2Basic Model + LoRA Prediction

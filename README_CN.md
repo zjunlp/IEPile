@@ -35,8 +35,9 @@
       - [4.3.2Lora训练](#432lora训练)
   - [5.预测](#5预测)
     - [5.1测试数据转换](#51测试数据转换)
-    - [5.2基础模型+Lora预测](#52基础模型lora预测)
-    - [5.3IE专用模型预测](#53ie专用模型预测)
+    - [5.2IEPile测试数据](#52iepile测试数据)
+    - [5.3基础模型+Lora预测](#53基础模型lora预测)
+    - [5.4IE专用模型预测](#54ie专用模型预测)
   - [6.评估](#6评估)
   - [7.声明和许可](#7声明和许可)
   - [8.局限](#8局限)
@@ -474,13 +475,7 @@ CUDA_VISIBLE_DEVICES="0,1,2,3" torchrun --nproc_per_node=4 --master_port=1287 sr
 
 ## 5.预测
 
-下载 **`IEPile`** 数据集 [Google Drive](https://drive.google.com/file/d/1jPdvXOTTxlAmHkn5XkeaaCFXQkYJk5Ng/view?usp=sharing) | [Hugging Face](https://huggingface.co/datasets/zjunlp/iepile) | [WiseModel](https://wisemodel.cn/datasets/zjunlp/IEPile) | [ModelScpoe](https://modelscope.cn/datasets/ZJUNLP/IEPile)
 
-通过下面脚本可批量获得测试指令数据：
-
-```bash
-bash ie2instruction/eval_data_convert.bash
-```
 
 ### 5.1测试数据转换
 
@@ -503,8 +498,47 @@ python ie2instruction/convert_func.py \
 `label` 字段将用于后续评估。若输入数据中缺少标注字段（`entity`, `relation`, `event`），则转换后的测试数据将不包含`label`字段，适用于那些无原始标注数据的场景。
 
 
+### 5.2IEPile测试数据
 
-### 5.2基础模型+Lora预测
+下载 **`IEPile`** 数据集 [Google Drive](https://drive.google.com/file/d/1jPdvXOTTxlAmHkn5XkeaaCFXQkYJk5Ng/view?usp=sharing) | [Hugging Face](https://huggingface.co/datasets/zjunlp/iepile) | [WiseModel](https://wisemodel.cn/datasets/zjunlp/IEPile) | [ModelScpoe](https://modelscope.cn/datasets/ZJUNLP/IEPile)
+
+文件树如下所示
+
+```bash
+IEPile
+├── train.json      # Training Set
+├── dev.json        # Validation Set
+├── IE-en           # English Unified Format Data
+│   ├── NER
+│   │   ├── CoNLL2003
+│   │   │   ├── train.json
+│   │   │   ├── dev.json
+│   │   │   ├── schema.json   # schema information file
+│   │   │   └── test.json
+│   │   ├── ...
+│   ├── RE
+│   ├── EE
+│   ├── EET
+│   ├── EEA
+├── IE-zh           # Chinese Unified Format Data
+│   ├── NER
+│   ├── RE
+│   ├── EE
+│   ├── EET
+│   ├── EEA
+```
+
+通过下面脚本可批量获得测试指令数据：
+
+```bash
+bash ie2instruction/eval_data_convert.bash
+```
+
+> 需要设置脚本中第一行 `dir_path` 为 IEPile 数据集实际绝对路径
+> 注意：由于转换后schema序列中label顺序可能不一致，所以评估结果可能略有偏差
+
+
+### 5.3基础模型+Lora预测
 
 **`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora)
 
@@ -548,7 +582,7 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 
 > 可通过设置 `bits` = 4 进行量化, RTX3090建议量化。
 
-### 5.3IE专用模型预测
+### 5.4IE专用模型预测
 
 
 | checkpoint_dir | model_name_or_path | moadel_name | fp16/bf16 | template | 
