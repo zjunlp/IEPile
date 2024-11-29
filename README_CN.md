@@ -309,7 +309,7 @@ python ie2instruction/convert_func.py \
     --schema_path data/NER/schema.json \
     --language zh \
     --task NER \
-    --split_num 6 \       
+    --split_num 6 \
     --random_sort \
     --split train
 ```
