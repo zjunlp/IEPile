@@ -218,7 +218,7 @@ IEPile
 
 ```bash
 mkdir data         # 数据放这
-mkdir mdoels       # 基础模型放这
+mkdir models       # 基础模型放这
 mkdir results      # 预测结果放这
 mkdir lora         # lora微调结果放这
 ```
