@@ -38,14 +38,14 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
     - [5.2IEPile Test Data](#52iepile-test-data)
     - [5.2Basic Model + LoRA Prediction](#52basic-model--lora-prediction)
     - [5.3IE-Specific Model Prediction](#53ie-specific-model-prediction)
-  - [Model usage](#model-usage)
+  - [Model Usage](#model-usage)
     - [Model Download](#model-download)
-    - [Environmental installation](#environmental-installation)
-    - [Fast running](#fast-running)
-    - [VLLM reasoning](#vllm-reasoning)
-    - [Ollama reasoning](#ollama-reasoning)
-    - [Reasoning on Mac](#reasoning-on-mac)
-    - [Multi GPU inference](#multi-gpu-inference)
+    - [Environmental Installation](#environmental-installation)
+    - [Fast Running](#fast-running)
+    - [VLLM Inference](#vllm-inference)
+    - [Ollama Inference](#ollama-inference)
+    - [Inference on Mac](#inference-on-mac)
+    - [Multi GPU Inference](#multi-gpu-inference)
   - [6.Evaluation](#6evaluation)
   - [7.Statement and License](#7statement-and-license)
   - [8.Limitations](#8limitations)
@@ -638,14 +638,14 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 
 
 
-## Model usage
+## Model Usage
 
 ### Model Download
 
 [HuggingFace](https://huggingface.co/zjunlp/OneKE), [ModelScope](https://modelscope.cn/models/ZJUNLP/OneKE), [WiseModel](https://wisemodel.cn/models/zjunlp/OneKE)
 
 
-### Environmental installation
+### Environmental Installation
 
 ```bash
 conda create -n OneKE python=3.9
@@ -653,7 +653,7 @@ conda activate OneKE
 pip install -r requirements.txt
 ```
 
-### Fast running
+### Fast Running
 
 It is recommended to have at least **20GB of GPU memory for training and reasoning**
 
@@ -710,7 +710,7 @@ print(output)
 ```
 
 
-### VLLM reasoning
+### VLLM Inference
 
 The environment configuration of vLLM can be found in its official installation configuration document ([Installation](https://vllm.readthedocs.io/en/latest/getting_started/installation.html))
 
@@ -728,7 +728,7 @@ curl http://localhost:8000/v1/completions -H "Content-Type: application/json" -d
 ```
 
 
-### Ollama reasoning
+### Ollama Inference
 
 The environment configuration of Olama can be found in its official documentation https://github.com/ollama/ollama/tree/main
 
@@ -796,7 +796,7 @@ ollama rm oneke
 ```
 
 
-### Reasoning on Mac
+### Inference on Mac
 
 ```python
 import torch
@@ -827,7 +827,7 @@ model = model.to(device)
 `PYTORCH_ENABLE_MPS_FALLBACK=1 python test.py` 命令行启动。
 
 
-### Multi GPU inference
+### Multi GPU Inference
 
 ```python
 import torch
