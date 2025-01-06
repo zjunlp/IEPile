@@ -38,6 +38,14 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
     - [5.2IEPile Test Data](#52iepile-test-data)
     - [5.2Basic Model + LoRA Prediction](#52basic-model--lora-prediction)
     - [5.3IE-Specific Model Prediction](#53ie-specific-model-prediction)
+  - [Model usage](#model-usage)
+    - [Model Download](#model-download)
+    - [Environmental installation](#environmental-installation)
+    - [Fast running](#fast-running)
+    - [VLLM reasoning](#vllm-reasoning)
+    - [Ollama reasoning](#ollama-reasoning)
+    - [Reasoning on Mac](#reasoning-on-mac)
+    - [Multi GPU inference](#multi-gpu-inference)
   - [6.Evaluation](#6evaluation)
   - [7.Statement and License](#7statement-and-license)
   - [8.Limitations](#8limitations)
@@ -627,6 +635,250 @@ CUDA_VISIBLE_DEVICES=0 python src/inference.py \
 ```
 
 `model_name_or_path`: The path to the weights of the model specialized for Information Extraction (IE).
+
+
+
+## Model usage
+
+### Model Download
+
+[HuggingFace](https://huggingface.co/zjunlp/OneKE), [ModelScope](https://modelscope.cn/models/ZJUNLP/OneKE), [WiseModel](https://wisemodel.cn/models/zjunlp/OneKE)
+
+
+### Environmental installation
+
+```bash
+conda create -n OneKE python=3.9
+conda activate OneKE
+pip install -r requirements.txt
+```
+
+### Fast running
+
+It is recommended to have at least **20GB of GPU memory for training and reasoning**
+
+
+```python
+import torch
+from transformers import (
+    AutoConfig,
+    AutoTokenizer,
+    AutoModelForCausalLM,
+    GenerationConfig,
+    BitsAndBytesConfig
+)
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model_path = 'zjunlp/OneKE' #选择你下载的模型存储在本地的位置
+config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
+tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+
+
+# 4bit量化OneKE
+quantization_config=BitsAndBytesConfig(     
+    load_in_4bit=True,
+    llm_int8_threshold=6.0,
+    llm_int8_has_fp16_weight=False,
+    bnb_4bit_compute_dtype=torch.bfloat16,
+    bnb_4bit_use_double_quant=True,
+    bnb_4bit_quant_type="nf4",
+)
+
+model = AutoModelForCausalLM.from_pretrained(
+    model_path,
+    config=config,
+    device_map="auto",  
+    quantization_config=quantization_config,
+    torch_dtype=torch.bfloat16,
+    trust_remote_code=True,
+)
+model.eval()
+
+
+system_prompt = '<<SYS>>\nYou are a helpful assistant. 你是一个乐于助人的助手。\n<</SYS>>\n\n'
+sintruct = "{\"instruction\": \"You are an expert in named entity recognition. Please extract entities that match the schema definition from the input. Return an empty list if the entity type does not exist. Please respond in the format of a JSON string.\", \"schema\": [\"person\", \"organization\", \"else\", \"location\"], \"input\": \"284 Robert Allenby ( Australia ) 69 71 71 73 , Miguel Angel Martin ( Spain ) 75 70 71 68 ( Allenby won at first play-off hole )\"}"
+sintruct = '[INST] ' + system_prompt + sintruct + '[/INST]'
+
+input_ids = tokenizer.encode(sintruct, return_tensors="pt").to(device)
+input_length = input_ids.size(1)
+generation_output = model.generate(input_ids=input_ids, generation_config=GenerationConfig(max_length=1024, max_new_tokens=512, return_dict_in_generate=True), pad_token_id=tokenizer.eos_token_id)
+generation_output = generation_output.sequences[0]
+generation_output = generation_output[input_length:]
+output = tokenizer.decode(generation_output, skip_special_tokens=True)
+
+print(output)
+```
+
+
+### VLLM reasoning
+
+The environment configuration of vLLM can be found in its official installation configuration document ([Installation](https://vllm.readthedocs.io/en/latest/getting_started/installation.html))
+
+
+Deployment Services
+
+```bash
+python -m vllm.entrypoints.openai.api_server --model zjunlp/OneKE
+```
+
+Terminal uses API inference
+
+```bash
+curl http://localhost:8000/v1/completions -H "Content-Type: application/json" -d '{"model": "/data2/lkw/OneKE", "prompt": "[INST] <<SYS>>You are a helpful assistant. 你是一个乐于助人的助手。<</SYS>>{\"instruction\": \"You are an expert in named entity recognition. Please extract entities that match the schema definition from the input. Return an empty list if the entity type does not exist. Please respond in the format of a JSON string.\", \"schema\": [\"person\", \"organization\", \"else\", \"location\"], \"input\": \"284 Robert Allenby ( Australia ) 69 71 71 73 , Miguel Angel Martin ( Spain ) 75 70 71 68 ( Allenby won at first play-off hole )\"}[/INST]", "max_tokens": 1024, "temperature": 0}'
+```
+
+
+### Ollama reasoning
+
+The environment configuration of Olama can be found in its official documentation https://github.com/ollama/ollama/tree/main
+
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+Create Modelfile file
+
+```bash
+FROM /disk/disk_20T/ghh/OneKE-13B-BF16.gguf
+PARAMETER temperature 0
+PARAMETER num_ctx 4096
+TEMPLATE """[INST] <<SYS>>You are a helpful assistant. 你是一个乐于助人的助手。<</SYS>>{{ .Prompt }}[/INST]"""
+```
+
+Start ollama
+
+```bash
+ollama serve
+```
+
+Enter commands in another terminal window
+
+```bash
+ollama create oneke -f Modelfile
+
+ollama run oneke
+```
+
+Input and Output
+
+```
+>>> {\"instruction\": \"你是专门进行实体抽取的专家。请从input中抽取出符合schema定义的实体，不存在的实体类型
+... 返回空列表。请按照JSON字符串的格式回答。\", \"schema\": [\"人物\", \"地理位置\", \"组织机构\"], \"input
+... \": \"在这里恕弟不恭之罪，敢在尊前一诤：前人论书，每曰“字字有来历，笔笔有出处”，细读公字，何尝跳出前人
+... 藩篱，自隶变而后，直至明季，兄有何新出？\"}
+ {"人物": [], "地理位置": [], "组织机构": []}
+
+>>> {\"instruction\": \"你是专门进行实体抽取的专家。请从input中抽取出符合schema定义的实体，不存在的实体类型
+... 返回空列表。请按照JSON字符串的格式回答。\", \"schema\": [\"组织机构\", \"地理位置\", \"人物\"], \"input
+... \": \"胡老说，当画画疲倦时就到院里去看看，给这盆花浇点水，给那棵花剪剪枝，回来再接着画，画累了再出去，
+... 如此循环往复，脑体结合，有益健康，胜过吃药。\"}
+ {"组织机构": [], "地理位置": [], "人物": ["胡"]}
+
+>>> {\"instruction\": \"你是专门进行事件提取的专家。请从input中抽取出符合schema定义的事件，不存在的事件返回
+... 空列表，不存在的论元返回NAN，如果论元存在多值请返回列表。请按照JSON字符串的格式回答。\", \"schema\": [{
+... \"event_type\": \"产品行为-获奖\", \"trigger\": true, \"arguments\": [\"获奖人\", \"颁奖机构\", \"奖项\
+... ", \"时间\"]}, {\"event_type\": \"组织行为-罢工\", \"trigger\": true, \"arguments\": [\"罢工人数\", \"
+... 罢工人员\", \"所属组织\", \"时间\"]}, {\"event_type\": \"组织关系-裁员\", \"trigger\": true, \"argument
+... s\": [\"裁员方\", \"时间\", \"裁员人数\"]}, {\"event_type\": \"组织关系-解散\", \"trigger\": true, \"ar
+... guments\": [\"解散方\", \"时间\"]}], \"input\": \"消失的“外企光环”，5月份在华裁员900余人，香饽饽变“臭”
+... 了\"}
+ {"产品行为-获奖": [], "组织行为-罢工": [], "组织关系-裁员": [{"trigger": "裁员", "arguments": {"裁员方
+": "NAN", "时间": "5月份", "裁员人数": "900余人"}}], "组织关系-解散": []}
+```
+
+
+Delete after exiting
+
+```bash
+ollama stop oneke
+
+ollama rm oneke
+```
+
+
+### Reasoning on Mac
+
+```python
+import torch
+from transformers import (
+    AutoConfig,
+    AutoTokenizer,
+    AutoModelForCausalLM,
+    GenerationConfig,
+    BitsAndBytesConfig
+)
+
+device = torch.device("mps")
+model_path = 'zjunlp/OneKE' #选择你下载的模型存储在本地的位置
+config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
+tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+
+model = AutoModelForCausalLM.from_pretrained(
+    model_path,
+    config=config,
+    device_map="auto",  
+    torch_dtype=torch.bfloat16,
+    trust_remote_code=True,
+)
+model.eval()
+model = model.to(device)
+```
+
+`PYTORCH_ENABLE_MPS_FALLBACK=1 python test.py` 命令行启动。
+
+
+### Multi GPU inference
+
+```python
+import torch
+from transformers import AutoConfig, AutoModel, AutoTokenizer, GenerationConfig
+from accelerate import init_empty_weights, infer_auto_device_map, load_checkpoint_in_model, dispatch_model
+
+max_memory_each_gpu = '15GiB' 
+gpu_device_ids = [0, 1] 
+no_split_module_classes = ["LlamaDecoderLayer"]
+model_path = '/disk/disk_20T/ghh/OneKE' #选择你下载的模型存储在本地的位置
+
+max_memory = {
+    device_id: max_memory_each_gpu for device_id in gpu_device_ids
+}
+
+config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
+tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
+
+with init_empty_weights():
+    model = AutoModel.from_config(config, torch_dtype=torch.float16, trust_remote_code=True)
+
+device_map = infer_auto_device_map(model, max_memory=max_memory, no_split_module_classes=no_split_module_classes)
+
+print("auto determined device_map", device_map)
+device_map["llm.model.embed_tokens"] = 0
+device_map["llm.model.layers.0"] = 0
+device_map["llm.lm_head"] = 0
+device_map["vpm"] = 0
+device_map["resampler"] = 0
+print("modified device_map", device_map)
+
+load_checkpoint_in_model(model, model_path, device_map=device_map)
+
+model = dispatch_model(model, device_map=device_map)
+torch.set_grad_enabled(False)
+model.eval()
+
+
+system_prompt = '<<SYS>>\nYou are a helpful assistant. 你是一个乐于助人的助手。\n<</SYS>>\n\n'
+sintruct = "{\"instruction\": \"You are an expert in named entity recognition. Please extract entities that match the schema definition from the input. Return an empty list if the entity type does not exist. Please respond in the format of a JSON string.\", \"schema\": [\"person\", \"organization\", \"else\", \"location\"], \"input\": \"284 Robert Allenby ( Australia ) 69 71 71 73 , Miguel Angel Martin ( Spain ) 75 70 71 68 ( Allenby won at first play-off hole )\"}"
+sintruct = '[INST] ' + system_prompt + sintruct + '[/INST]'
+
+input_ids = tokenizer.encode(sintruct, return_tensors="pt")
+input_length = input_ids.size(1)
+generation_output = model.generate(input_ids=input_ids, generation_config=GenerationConfig(max_length=1024, max_new_tokens=512, return_dict_in_generate=True), pad_token_id=tokenizer.eos_token_id)
+generation_output = generation_output.sequences[0]
+generation_output = generation_output[input_length:]
+output = tokenizer.decode(generation_output, skip_special_tokens=True)
+
+print(output)
+```
 
 
 
