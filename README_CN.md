@@ -43,6 +43,7 @@
     - [环境安装](#环境安装)
     - [快速运行](#快速运行)
     - [vLLM 推理](#vllm-推理)
+    - [gguf 格式转换](#gguf-格式转换)
     - [ollama 推理](#ollama-推理)
     - [在 Mac 上推理](#在-mac-上推理)
     - [多卡推理](#多卡推理)
@@ -72,7 +73,7 @@
 > 请注意，以上提供的数据集链接中所含数据已经排除了与ACE2005数据集相关的部分。若您需要访问未经过滤的完整数据集，并且已成功获取所需的权限，敬请通过电子邮件方式联系 guihonghao@zju.edu.cn 或 zhangningyu@zju.edu.cn。我们将提供完整数据集资源。
 
 
-**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`OneKE`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/OneKE](https://huggingface.co/zjunlp/OneKE)
+**`LLaMA2-IEPile`** | **`Baichuan2-IEPile`** | **`OneKE`** 模型下载链接：[zjunlp/llama2-13b-iepile-lora](https://huggingface.co/zjunlp/llama2-13b-iepile-lora/tree/main) | [zjunlp/baichuan2-13b-iepile-lora](https://huggingface.co/zjunlp/baichuan2-13b-iepile-lora) | [zjunlp/OneKE](https://huggingface.co/zjunlp/OneKE) | 转换后的gguf格式的OneKE [OneKE-gguf](https://modelscope.cn/models/ZJUNLP/OneKE-gguf)
 
 
 ![statistic](./assets/statistic.jpg)
@@ -706,6 +707,30 @@ curl http://localhost:8000/v1/completions -H "Content-Type: application/json" -d
 ```
 
 
+### gguf 格式转换
+
+为了将模型权重从Hugging Face格式转换为GGUF格式，我们首先需要克隆llama.cpp的GitHub仓库，该仓库包含了必要的转换脚本。请按照以下步骤操作：
+
+```bash
+git clone https://github.com/ggerganov/llama.cpp.git
+cd llama.cpp
+```
+
+
+接下来，使用提供的Python脚本convert_hf_to_gguf.py来执行格式转换。确保你已经安装了所需的Python环境和依赖项。下面是执行转换命令的具体方式：
+
+```bash
+python3 convert_hf_to_gguf.py \
+    /disk/disk_20T/ghh/OneKE \
+    --outfile /disk/disk_20T/ghh/OneKE.gguf \
+    --outtype bf16 
+```
+
+请注意，--model_dir参数指定了原始模型文件的位置，而--outfile定义了转换后GGUF文件的保存位置。--outtype参数用来设置输出文件中数值的精度。
+
+转换后的gguf格式的OneKE [OneKE-gguf](https://modelscope.cn/models/ZJUNLP/OneKE-gguf)
+
+
 ### ollama 推理
 
 ollama 的环境配置可见其官方文档 https://github.com/ollama/ollama/tree/main
@@ -718,7 +743,7 @@ curl -fsSL https://ollama.com/install.sh | sh
 创建 Modelfile 文件
 
 ```bash
-FROM /disk/disk_20T/ghh/OneKE-13B-BF16.gguf
+FROM ./OneKE-13B-BF16.gguf
 PARAMETER temperature 0
 PARAMETER num_ctx 4096
 TEMPLATE """[INST] <<SYS>>You are a helpful assistant. 你是一个乐于助人的助手。<</SYS>>{{ .Prompt }}[/INST]"""

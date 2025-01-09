@@ -43,6 +43,7 @@ This is the official repository for [IEPile: Unearthing Large-Scale Schema-Based
     - [Environmental Installation](#environmental-installation)
     - [Fast Running](#fast-running)
     - [VLLM Inference](#vllm-inference)
+    - [GGUF Format Conversion](#gguf-format-conversion)
     - [Ollama Inference](#ollama-inference)
     - [Inference on Mac](#inference-on-mac)
     - [Multi GPU Inference](#multi-gpu-inference)
@@ -728,6 +729,31 @@ curl http://localhost:8000/v1/completions -H "Content-Type: application/json" -d
 ```
 
 
+### GGUF Format Conversion
+
+To convert model weights from Hugging Face format to GGUF format, we first need to clone the GitHub repository of llama.cpp, which contains the necessary conversion scripts. Please follow the steps below:
+
+
+```bash
+git clone https://github.com/ggerganov/llama.cpp.git
+cd llama.cpp
+```
+
+
+Next, use the provided Python script convert_hf_to_gguf.py to perform the format conversion. Ensure you have installed the required Python environment and dependencies. Below is the specific command to execute the conversion:
+
+```bash
+python3 convert_hf_to_gguf.py \
+    /disk/disk_20T/ghh/OneKE \
+    --outfile /disk/disk_20T/ghh/OneKE-gguf \
+    --outtype bf16 
+```
+
+
+Please note that the `--model_dir` parameter specifies the location of the original model files, while the `--outfile` parameter defines the save location for the converted GGUF file. The `--outtype` parameter sets the precision of the numerical values in the output file.
+
+
+
 ### Ollama Inference
 
 The environment configuration of Olama can be found in its official documentation https://github.com/ollama/ollama/tree/main
@@ -739,7 +765,7 @@ curl -fsSL https://ollama.com/install.sh | sh
 Create Modelfile file
 
 ```bash
-FROM /disk/disk_20T/ghh/OneKE-13B-BF16.gguf
+FROM ./OneKE-13B-BF16.gguf
 PARAMETER temperature 0
 PARAMETER num_ctx 4096
 TEMPLATE """[INST] <<SYS>>You are a helpful assistant. 你是一个乐于助人的助手。<</SYS>>{{ .Prompt }}[/INST]"""

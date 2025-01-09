@@ -5,6 +5,7 @@
   - [环境安装](#环境安装)
   - [快速运行](#快速运行)
   - [vLLM 推理](#vllm-推理)
+  - [gguf 格式转换](#gguf-格式转换)
   - [ollama 推理](#ollama-推理)
   - [在 Mac 上推理](#在-mac-上推理)
   - [多卡推理](#多卡推理)
@@ -36,7 +37,7 @@ OneKE是由蚂蚁集团和浙江大学联合研发的大模型知识抽取框架
 
 ### 模型下载
 
-[HuggingFace](https://huggingface.co/zjunlp/OneKE), [ModelScope](https://modelscope.cn/models/ZJUNLP/OneKE), [WiseModel](https://wisemodel.cn/models/zjunlp/OneKE)
+[HuggingFace](https://huggingface.co/zjunlp/OneKE), [ModelScope](https://modelscope.cn/models/ZJUNLP/OneKE), [WiseModel](https://wisemodel.cn/models/zjunlp/OneKE), 转换后的gguf格式的OneKE [OneKE-gguf](https://modelscope.cn/models/ZJUNLP/OneKE-gguf)
 
 ### 环境安装
 
@@ -117,6 +118,28 @@ python -m vllm.entrypoints.openai.api_server --model zjunlp/OneKE
 curl http://localhost:8000/v1/completions -H "Content-Type: application/json" -d '{"model": "/data2/lkw/OneKE", "prompt": "[INST] <<SYS>>You are a helpful assistant. 你是一个乐于助人的助手。<</SYS>>{\"instruction\": \"You are an expert in named entity recognition. Please extract entities that match the schema definition from the input. Return an empty list if the entity type does not exist. Please respond in the format of a JSON string.\", \"schema\": [\"person\", \"organization\", \"else\", \"location\"], \"input\": \"284 Robert Allenby ( Australia ) 69 71 71 73 , Miguel Angel Martin ( Spain ) 75 70 71 68 ( Allenby won at first play-off hole )\"}[/INST]", "max_tokens": 1024, "temperature": 0}'
 ```
 
+### gguf 格式转换
+
+为了将模型权重从Hugging Face格式转换为GGUF格式，我们首先需要克隆llama.cpp的GitHub仓库，该仓库包含了必要的转换脚本。请按照以下步骤操作：
+
+```bash
+git clone https://github.com/ggerganov/llama.cpp.git
+cd llama.cpp
+```
+
+
+接下来，使用提供的Python脚本convert_hf_to_gguf.py来执行格式转换。确保你已经安装了所需的Python环境和依赖项。下面是执行转换命令的具体方式：
+
+```bash
+python3 convert_hf_to_gguf.py \
+    /disk/disk_20T/ghh/OneKE \
+    --outfile /disk/disk_20T/ghh/OneKE.gguf \
+    --outtype bf16 
+```
+
+请注意，--model_dir参数指定了原始模型文件的位置，而--outfile定义了转换后GGUF文件的保存位置。--outtype参数用来设置输出文件中数值的精度。
+
+转换后的gguf格式的OneKE [OneKE-gguf](https://modelscope.cn/models/ZJUNLP/OneKE-gguf)
 
 ### ollama 推理
 
@@ -130,7 +153,7 @@ curl -fsSL https://ollama.com/install.sh | sh
 创建 Modelfile 文件
 
 ```bash
-FROM /disk/disk_20T/ghh/OneKE-13B-BF16.gguf
+FROM ./OneKE-13B-BF16.gguf
 PARAMETER temperature 0
 PARAMETER num_ctx 4096
 TEMPLATE """[INST] <<SYS>>You are a helpful assistant. 你是一个乐于助人的助手。<</SYS>>{{ .Prompt }}[/INST]"""
